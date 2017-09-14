@@ -1,0 +1,11 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+
+    package="com.lapptelier.smartrecyclerview">
+
+    <application
+        android:label="com.lapptelier.smartrecyclerview"
+        android:supportsRtl="true">
+
+    </application>
+
+</manifest>
