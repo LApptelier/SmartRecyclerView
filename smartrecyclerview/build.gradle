@@ -1,5 +1,23 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.jakewharton:butterknife-gradle-plugin:8.8.1'
+        // used to generate a POM file
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
+    }
+}
+
+plugins {
+    id "com.jfrog.bintray" version "1.7.3"
+}
+
 apply plugin: 'com.android.library'
 apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
 
 android {
     compileSdkVersion 26
@@ -9,7 +27,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 26
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0-Alpha-1"
 
     }
 
@@ -20,15 +38,6 @@ android {
         debug {
 
         }
-    }
-}
-
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.jakewharton:butterknife-gradle-plugin:8.8.1'
     }
 }
 
@@ -43,4 +52,41 @@ dependencies {
     compile 'com.jakewharton:butterknife:8.8.1'
     compile 'com.malinskiy:superrecyclerview:1.1.4'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+}
+
+bintray {
+    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
+    key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_KEY')
+    // jFrog plugin must be declared for this line to work
+    configurations = ['archives']
+    // Package info for BinTray
+    pkg {
+        repo = 'maven'
+        name = 'com.lapptelier.smartrecyclerview'
+        userOrg = 'lapptelier'
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/Apptelier/SmartRecyclerView.git'
+        websiteUrl = 'https://github.com/Apptelier/SmartRecyclerView.git'
+        version {
+            name = '1.0.0-Alpha-1'
+            desc = 'Alpha version of the 1.0.0'
+            released = new Date()
+            vcsTag = '1.0.0-Alpha-1'
+        }
+    }
+}
+
+// variable for the maven plugin
+archivesBaseName = "smartrecyclerview"
+
+install {
+    repositories.mavenInstaller {
+        pom.project {
+            group = 'com.lapptelier.smartrecyclerview'
+            version = '1.0.0-Alpha-1'
+            group "com.codepath.libraries"
+            artifactId "smartrecyclerview"
+            version "1.0.0-Alpha-1"
+        }
+    }
 }
