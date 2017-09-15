@@ -3,12 +3,7 @@
 
     package="com.lapptelier.test">
 
-    <application
-        android:allowBackup="false"
-        android:label="SmartRecyclerViewTest"
-        tools:replace="android:label"
-        android:theme="@style/Theme.AppCompat"
-        android:supportsRtl="true">
+    <application android:theme="@style/Theme.AppCompat">
 
         <activity android:name=".SmartRecyclerViewTestActivity">
             <intent-filter>
