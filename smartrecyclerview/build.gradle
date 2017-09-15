@@ -65,8 +65,8 @@ bintray {
         name = 'com.lapptelier.smartrecyclerview'
         userOrg = 'lapptelier'
         licenses = ['Apache-2.0']
-        vcsUrl = 'https://github.com/Apptelier/SmartRecyclerView.git'
-        websiteUrl = 'https://github.com/Apptelier/SmartRecyclerView.git'
+        vcsUrl = 'https://github.com/LApptelier/SmartRecyclerView.git'
+        websiteUrl = 'https://github.com/LApptelier/SmartRecyclerView.git'
         version {
             name = '1.0.0-Alpha-1'
             desc = 'Alpha version of the 1.0.0'
