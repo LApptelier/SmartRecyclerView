@@ -62,13 +62,13 @@ bintray {
     // Package info for BinTray
     pkg {
         repo = 'maven'
-        name = 'com.lapptelier.smartrecyclerview'
+        name = 'SmartRecyclerView'
         userOrg = 'lapptelier'
         licenses = ['Apache-2.0']
         vcsUrl = 'https://github.com/LApptelier/SmartRecyclerView.git'
         websiteUrl = 'https://github.com/LApptelier/SmartRecyclerView.git'
         version {
-            name = '1.0.0-Alpha-1'
+            name = '1.0.0-Alpha-2'
             desc = 'Alpha version of the 1.0.0'
             released = new Date()
             vcsTag = '1.0.0-Alpha-1'
