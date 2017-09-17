@@ -6,25 +6,6 @@
         android:label="com.lapptelier.smartrecyclerview"
         android:supportsRtl="true">
 
-        <uses-library
-            android:name="com.malinskiy:superrecyclerview"
-            android:required="true" />
-        
-        <uses-library
-            android:name="com.android.support:recyclerview-v7"
-            android:required="true" />
-        <uses-library
-            android:name="com.android.support:appcompat-v7"
-            android:required="true" />
-        <uses-library
-            android:name="com.github.zhaokaiqiang.klog:library"
-            android:required="true" />
-        <uses-library
-            android:name="com.jakewharton:butterknife"
-            android:required="true" />
-        <uses-library
-            android:name="com.malinskiy:superrecyclerview"
-            android:required="true" />
     </application>
 
 </manifest>

@@ -27,7 +27,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 26
         versionCode 1
-        versionName "1.0.0-Alpha-2"
+        versionName "1.0.0"
 
     }
 
@@ -50,7 +50,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:26.0.0-alpha1'
     compile 'com.github.zhaokaiqiang.klog:library:1.6.0'
     compile 'com.jakewharton:butterknife:8.8.1'
-    compile 'com.malinskiy:superrecyclerview:1.1.4'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 }
 

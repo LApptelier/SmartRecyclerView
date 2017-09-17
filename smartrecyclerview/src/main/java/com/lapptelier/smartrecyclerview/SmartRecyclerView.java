@@ -11,8 +11,6 @@ import android.view.View;
 import android.view.ViewStub;
 import android.widget.LinearLayout;
 
-import com.malinskiy.superrecyclerview.OnMoreListener;
-import com.malinskiy.superrecyclerview.swipe.SwipeDismissRecyclerViewTouchListener;
 import com.socks.library.KLog;
 
 import java.util.List;
@@ -228,28 +226,28 @@ public class SmartRecyclerView extends LinearLayout {
 
     }
 
-    /**
-     * Set RecyclerView' SwipeToDismiss Listener
-     *
-     * @param listener inner RecyclerView' SwipeToDismiss Listener
-     */
-    public void setupSwipeToDismiss(final SwipeDismissRecyclerViewTouchListener.DismissCallbacks listener) {
-        SwipeDismissRecyclerViewTouchListener touchListener =
-                new SwipeDismissRecyclerViewTouchListener(mRecyclerView, new SwipeDismissRecyclerViewTouchListener.DismissCallbacks() {
-                    @Override
-                    public boolean canDismiss(int position) {
-                        return listener.canDismiss(position);
-                    }
-
-                    @Override
-                    public void onDismiss(RecyclerView recyclerView, int[] reverseSortedPositions) {
-                        listener.onDismiss(recyclerView, reverseSortedPositions);
-                    }
-                });
-        mSwipeDismissScrollListener = touchListener.makeScrollListener();
-        if (mRecyclerView != null)
-            mRecyclerView.setOnTouchListener(touchListener);
-    }
+//    /**
+//     * Set RecyclerView' SwipeToDismiss Listener
+//     *
+//     * @param listener inner RecyclerView' SwipeToDismiss Listener
+//     */
+//    public void setupSwipeToDismiss(final SwipeDismissRecyclerViewTouchListener.DismissCallbacks listener) {
+//        SwipeDismissRecyclerViewTouchListener touchListener =
+//                new SwipeDismissRecyclerViewTouchListener(mRecyclerView, new SwipeDismissRecyclerViewTouchListener.DismissCallbacks() {
+//                    @Override
+//                    public boolean canDismiss(int position) {
+//                        return listener.canDismiss(position);
+//                    }
+//
+//                    @Override
+//                    public void onDismiss(RecyclerView recyclerView, int[] reverseSortedPositions) {
+//                        listener.onDismiss(recyclerView, reverseSortedPositions);
+//                    }
+//                });
+//        mSwipeDismissScrollListener = touchListener.makeScrollListener();
+//        if (mRecyclerView != null)
+//            mRecyclerView.setOnTouchListener(touchListener);
+//    }
 
     /**
      * Update the view to display loading if needed
