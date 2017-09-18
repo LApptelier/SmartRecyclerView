@@ -577,6 +577,6 @@ public class SmartRecyclerView extends LinearLayout {
      * Scroll the recycler view to its top
      */
     public void scrollToTop(){
-        mRecyclerView.smoothScrollToPosition(0);
+        mRecyclerView.scrollToPosition(0);
     }
 }
