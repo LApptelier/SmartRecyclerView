@@ -49,7 +49,7 @@ public class SmartRecyclerViewTestActivity extends AppCompatActivity {
         mRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
         //on sette le texte de la vue vide
-        mRecyclerView.setLoadingView(R.layout.activity_test_smart_recycler_view_empty);
+        mRecyclerView.setLoadingLayout(R.layout.activity_test_smart_recycler_view_empty);
 
         new Handler().postDelayed(new Runnable() {
             @Override

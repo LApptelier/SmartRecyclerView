@@ -351,7 +351,7 @@ public class SmartRecyclerView extends LinearLayout {
      *
      * @param viewLayout the view layout to inflate
      */
-    public void setEmptyView(int viewLayout) {
+    public void setEmptyLayout(int viewLayout) {
         mEmptyViewStub.setLayoutResource(viewLayout);
         mEmptyView = mEmptyViewStub.inflate();
     }
@@ -361,7 +361,7 @@ public class SmartRecyclerView extends LinearLayout {
      *
      * @param viewLayout the view layout to inflate
      */
-    public void setLoadingView(int viewLayout) {
+    public void setLoadingLayout(int viewLayout) {
         mLoadingViewStub.setLayoutResource(viewLayout);
         mLoadingView = mLoadingViewStub.inflate();
     }
@@ -571,5 +571,12 @@ public class SmartRecyclerView extends LinearLayout {
      */
     public void setLoadMoreLayout(int loadMoreLayout) {
         this.loadMoreLayout = loadMoreLayout;
+    }
+
+    /**
+     * Scroll the recycler view to its top
+     */
+    public void scroollToTop(){
+        mRecyclerView.smoothScrollToPosition(0);
     }
 }
