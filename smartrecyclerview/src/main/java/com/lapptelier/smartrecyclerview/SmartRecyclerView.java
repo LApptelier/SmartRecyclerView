@@ -576,7 +576,32 @@ public class SmartRecyclerView extends LinearLayout {
     /**
      * Scroll the recycler view to its top
      */
-    public void scrollToTop(){
-        mRecyclerView.scrollToPosition(0);
+    public void scrollToTop() {
+        if (!mRecyclerView.isAnimating() && !mRecyclerView.isComputingLayout())
+            mRecyclerView.scrollToPosition(0);
+    }
+
+    /**
+     * Smooth scroll the recycler view to its top
+     */
+    public void smoothScrollToTop() {
+        if (!mRecyclerView.isAnimating() && !mRecyclerView.isComputingLayout())
+            mRecyclerView.smoothScrollToPosition(0);
+    }
+
+    /**
+     * Return the inflated view layout placed when the list is empty
+     * @return the 'empty' view
+     */
+    public View getEmptyView(){
+        return mEmptyView;
+    }
+
+    /**
+     * Return the inflated view layout placed when the list is loading elements
+     * @return the 'loading' view
+     */
+    public View getLoadingView(){
+        return mLoadingView;
     }
 }
