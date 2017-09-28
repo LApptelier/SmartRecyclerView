@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewStub;
 import android.widget.LinearLayout;
 
+import com.lapptelier.smartrecyclerview.swipe.SwipeDismissRecyclerViewTouchListener;
 import com.socks.library.KLog;
 
 import java.util.List;
@@ -30,12 +31,12 @@ import butterknife.ButterKnife;
  * @author L'Apptelier SARL
  * @date 14/09/2017
  */
-public class SmartRecyclerView extends LinearLayout {
+public class RecyclerLayout extends LinearLayout {
 
     protected int ITEM_LEFT_TO_LOAD_MORE = 10; // count of item to display before firing the loadmore action
 
     @BindView(R2.id.smart_list_recycler)
-    protected RecyclerView mRecyclerView;
+    public RecyclerView mRecyclerView;
     @BindView(R2.id.smart_list_swipe_layout)
     protected SwipeRefreshLayout mSwipeLayout;
     @BindView(R2.id.smart_list_loading_stub)
@@ -57,6 +58,8 @@ public class SmartRecyclerView extends LinearLayout {
     protected RecyclerView.OnScrollListener mExternalOnScrollListener;
     protected OnMoreListener mOnMoreListener;
 
+
+
     // generic adapter
     protected SmartAdapter mAdapter;
 
@@ -68,7 +71,7 @@ public class SmartRecyclerView extends LinearLayout {
      *
      * @param context the current context
      */
-    public SmartRecyclerView(Context context) {
+    public RecyclerLayout(Context context) {
         super(context);
     }
 
@@ -78,7 +81,7 @@ public class SmartRecyclerView extends LinearLayout {
      * @param context the current context
      * @param attrs   attribute set to customize the RecyclerView
      */
-    public SmartRecyclerView(Context context, AttributeSet attrs) {
+    public RecyclerLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
@@ -90,7 +93,7 @@ public class SmartRecyclerView extends LinearLayout {
      * @param attrs    attribute set to customize the RecyclerView
      * @param defStyle style of the RecyclerView
      */
-    public SmartRecyclerView(Context context, AttributeSet attrs, int defStyle) {
+    public RecyclerLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init();
     }
@@ -145,6 +148,7 @@ public class SmartRecyclerView extends LinearLayout {
                         mExternalOnScrollListener.onScrolled(recyclerView, dx, dy);
                     if (mSwipeDismissScrollListener != null)
                         mSwipeDismissScrollListener.onScrolled(recyclerView, dx, dy);
+
                 }
 
                 @Override
@@ -226,28 +230,28 @@ public class SmartRecyclerView extends LinearLayout {
 
     }
 
-//    /**
-//     * Set RecyclerView' SwipeToDismiss Listener
-//     *
-//     * @param listener inner RecyclerView' SwipeToDismiss Listener
-//     */
-//    public void setupSwipeToDismiss(final SwipeDismissRecyclerViewTouchListener.DismissCallbacks listener) {
-//        SwipeDismissRecyclerViewTouchListener touchListener =
-//                new SwipeDismissRecyclerViewTouchListener(mRecyclerView, new SwipeDismissRecyclerViewTouchListener.DismissCallbacks() {
-//                    @Override
-//                    public boolean canDismiss(int position) {
-//                        return listener.canDismiss(position);
-//                    }
-//
-//                    @Override
-//                    public void onDismiss(RecyclerView recyclerView, int[] reverseSortedPositions) {
-//                        listener.onDismiss(recyclerView, reverseSortedPositions);
-//                    }
-//                });
-//        mSwipeDismissScrollListener = touchListener.makeScrollListener();
-//        if (mRecyclerView != null)
-//            mRecyclerView.setOnTouchListener(touchListener);
-//    }
+    /**
+     * Set RecyclerView' SwipeToDismiss Listener
+     *
+     * @param listener inner RecyclerView' SwipeToDismiss Listener
+     */
+    public void setupSwipeToDismiss(final SwipeDismissRecyclerViewTouchListener.DismissCallbacks listener) {
+        SwipeDismissRecyclerViewTouchListener touchListener =
+                new SwipeDismissRecyclerViewTouchListener(mRecyclerView, new SwipeDismissRecyclerViewTouchListener.DismissCallbacks() {
+                    @Override
+                    public boolean canDismiss(int position) {
+                        return listener.canDismiss(position);
+                    }
+
+                    @Override
+                    public void onDismiss(RecyclerView recyclerView, int[] reverseSortedPositions) {
+                        listener.onDismiss(recyclerView, reverseSortedPositions);
+                    }
+                });
+        mSwipeDismissScrollListener = touchListener.makeScrollListener();
+        if (mRecyclerView != null)
+            mRecyclerView.setOnTouchListener(touchListener);
+    }
 
     /**
      * Update the view to display loading if needed

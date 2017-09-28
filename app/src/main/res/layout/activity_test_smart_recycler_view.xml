@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.lapptelier.smartrecyclerview.SmartRecyclerView
+    <com.lapptelier.smartrecyclerview.RecyclerLayout
         android:id="@+id/test_smart_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
