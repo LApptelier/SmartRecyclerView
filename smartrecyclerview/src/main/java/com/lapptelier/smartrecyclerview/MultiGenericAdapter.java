@@ -7,9 +7,7 @@ import android.view.ViewGroup;
 import com.socks.library.KLog;
 
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static android.support.v7.widget.RecyclerView.ViewHolder;
@@ -28,7 +26,7 @@ public class MultiGenericAdapter extends SmartAdapter {
 
     private Map<Class<? extends ViewHolder>, Integer> fragmentResources; // List of all ViewHolders' layout ressource_id
     private Map<Class<?>, Class<? extends ViewHolder>> viewHolderForClass; // Map of all corresponding ViewHolders classes for a given item class
-    private List<Class<? extends ViewHolder>> viewHolders; // List of all the ViewHolders classes
+    private Map<Integer, Class<? extends ViewHolder>> viewHolders; // Map of all the ViewHolders classes, by their layour ressource id
 
     /**
      * Empty constructor
@@ -36,7 +34,7 @@ public class MultiGenericAdapter extends SmartAdapter {
     public MultiGenericAdapter() {
         this.viewHolderForClass = new HashMap<>();
         this.fragmentResources = new HashMap<>();
-        this.viewHolders = new ArrayList<>();
+        this.viewHolders = new HashMap<>();
     }
 
     /**
@@ -50,7 +48,6 @@ public class MultiGenericAdapter extends SmartAdapter {
         this();
         this.addViewHolderType(itemClass, viewHolderClass, fragment_resource);
     }
-
 
 
     @Override
@@ -84,7 +81,7 @@ public class MultiGenericAdapter extends SmartAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        return this.viewHolders.indexOf(this.viewHolderForClass.get(this.items.get(position).getClass()));
+        return this.fragmentResources.get(this.viewHolderForClass.get(this.items.get(position).getClass()));
     }
 
 
@@ -98,7 +95,7 @@ public class MultiGenericAdapter extends SmartAdapter {
     public void addViewHolderType(Class<?> itemClass, Class<? extends ViewHolder> viewHolderClass, int fragment_resource) {
         this.viewHolderForClass.put(itemClass, viewHolderClass);
         this.fragmentResources.put(viewHolderClass, fragment_resource);
-        this.viewHolders.add(viewHolderClass);
+        this.viewHolders.put(fragment_resource, viewHolderClass);
     }
 
     /**
@@ -107,11 +104,12 @@ public class MultiGenericAdapter extends SmartAdapter {
      * @param viewHolderClass ViewHolder class to remove
      */
     public void removeViewHolderType(Class<? extends ViewHolder> viewHolderClass) {
-        if (this.viewHolders.contains(viewHolderClass)) {
+        if (this.viewHolders.containsKey(viewHolderForClass.get(viewHolderClass)))
+            this.viewHolders.remove(viewHolderForClass.get(viewHolderClass));
+        if (viewHolderForClass.containsKey(viewHolderClass))
             this.viewHolderForClass.remove(viewHolderClass);
+        if (fragmentResources.containsKey(viewHolderClass))
             this.fragmentResources.remove(viewHolderClass);
-            this.viewHolders.remove(viewHolderClass);
-        }
     }
 
 

@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewStub;
 import android.widget.LinearLayout;
 
-import com.lapptelier.smartrecyclerview.swipe.SwipeDismissRecyclerViewTouchListener;
 import com.socks.library.KLog;
 
 import java.util.List;
@@ -31,7 +30,7 @@ import butterknife.ButterKnife;
  * @author L'Apptelier SARL
  * @date 14/09/2017
  */
-public class RecyclerLayout extends LinearLayout {
+public class SmartRecyclerView extends LinearLayout {
 
     protected int ITEM_LEFT_TO_LOAD_MORE = 10; // count of item to display before firing the loadmore action
 
@@ -54,7 +53,6 @@ public class RecyclerLayout extends LinearLayout {
 
     // recycler view listener
     protected RecyclerView.OnScrollListener mInternalOnScrollListener;
-    private RecyclerView.OnScrollListener mSwipeDismissScrollListener;
     protected RecyclerView.OnScrollListener mExternalOnScrollListener;
     protected OnMoreListener mOnMoreListener;
 
@@ -71,7 +69,7 @@ public class RecyclerLayout extends LinearLayout {
      *
      * @param context the current context
      */
-    public RecyclerLayout(Context context) {
+    public SmartRecyclerView(Context context) {
         super(context);
     }
 
@@ -81,7 +79,7 @@ public class RecyclerLayout extends LinearLayout {
      * @param context the current context
      * @param attrs   attribute set to customize the RecyclerView
      */
-    public RecyclerLayout(Context context, AttributeSet attrs) {
+    public SmartRecyclerView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
@@ -93,7 +91,7 @@ public class RecyclerLayout extends LinearLayout {
      * @param attrs    attribute set to customize the RecyclerView
      * @param defStyle style of the RecyclerView
      */
-    public RecyclerLayout(Context context, AttributeSet attrs, int defStyle) {
+    public SmartRecyclerView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init();
     }
@@ -146,8 +144,6 @@ public class RecyclerLayout extends LinearLayout {
 
                     if (mExternalOnScrollListener != null)
                         mExternalOnScrollListener.onScrolled(recyclerView, dx, dy);
-                    if (mSwipeDismissScrollListener != null)
-                        mSwipeDismissScrollListener.onScrolled(recyclerView, dx, dy);
 
                 }
 
@@ -156,8 +152,6 @@ public class RecyclerLayout extends LinearLayout {
                     super.onScrollStateChanged(recyclerView, newState);
                     if (mExternalOnScrollListener != null)
                         mExternalOnScrollListener.onScrollStateChanged(recyclerView, newState);
-                    if (mSwipeDismissScrollListener != null)
-                        mSwipeDismissScrollListener.onScrollStateChanged(recyclerView, newState);
                 }
             };
             mRecyclerView.addOnScrollListener(mInternalOnScrollListener);
@@ -228,29 +222,6 @@ public class RecyclerLayout extends LinearLayout {
             });
         }
 
-    }
-
-    /**
-     * Set RecyclerView' SwipeToDismiss Listener
-     *
-     * @param listener inner RecyclerView' SwipeToDismiss Listener
-     */
-    public void setupSwipeToDismiss(final SwipeDismissRecyclerViewTouchListener.DismissCallbacks listener) {
-        SwipeDismissRecyclerViewTouchListener touchListener =
-                new SwipeDismissRecyclerViewTouchListener(mRecyclerView, new SwipeDismissRecyclerViewTouchListener.DismissCallbacks() {
-                    @Override
-                    public boolean canDismiss(int position) {
-                        return listener.canDismiss(position);
-                    }
-
-                    @Override
-                    public void onDismiss(RecyclerView recyclerView, int[] reverseSortedPositions) {
-                        listener.onDismiss(recyclerView, reverseSortedPositions);
-                    }
-                });
-        mSwipeDismissScrollListener = touchListener.makeScrollListener();
-        if (mRecyclerView != null)
-            mRecyclerView.setOnTouchListener(touchListener);
     }
 
     /**
