@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 
 import com.socks.library.KLog;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -53,10 +54,9 @@ public class SmartRecyclerView extends LinearLayout {
 
     // recycler view listener
     protected RecyclerView.OnScrollListener mInternalOnScrollListener;
-    protected RecyclerView.OnScrollListener mExternalOnScrollListener;
+
+    protected List<RecyclerView.OnScrollListener> mExternalOnScrollListeners;
     protected OnMoreListener mOnMoreListener;
-
-
 
     // generic adapter
     protected SmartAdapter mAdapter;
@@ -105,6 +105,8 @@ public class SmartRecyclerView extends LinearLayout {
             return;
         }
 
+        mExternalOnScrollListeners = new ArrayList<>();
+
         LayoutInflater inflater = LayoutInflater.from(getContext());
 
         View view = inflater.inflate(R.layout.layout_smart_recycler_view, this);
@@ -142,16 +144,16 @@ public class SmartRecyclerView extends LinearLayout {
                         }
                     }
 
-                    if (mExternalOnScrollListener != null)
-                        mExternalOnScrollListener.onScrolled(recyclerView, dx, dy);
+                    for (RecyclerView.OnScrollListener listener : mExternalOnScrollListeners)
+                        listener.onScrolled(recyclerView, dx, dy);
 
                 }
 
                 @Override
                 public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                     super.onScrollStateChanged(recyclerView, newState);
-                    if (mExternalOnScrollListener != null)
-                        mExternalOnScrollListener.onScrollStateChanged(recyclerView, newState);
+                    for (RecyclerView.OnScrollListener listener : mExternalOnScrollListeners)
+                        listener.onScrollStateChanged(recyclerView, newState);
                 }
             };
             mRecyclerView.addOnScrollListener(mInternalOnScrollListener);
@@ -566,17 +568,43 @@ public class SmartRecyclerView extends LinearLayout {
 
     /**
      * Return the inflated view layout placed when the list is empty
+     *
      * @return the 'empty' view
      */
-    public View getEmptyView(){
+    public View getEmptyView() {
         return mEmptyView;
     }
 
     /**
      * Return the inflated view layout placed when the list is loading elements
+     *
      * @return the 'loading' view
      */
-    public View getLoadingView(){
+    public View getLoadingView() {
         return mLoadingView;
     }
+
+    /**
+     * @return the scroll listeners of the recyclerView
+     */
+    public List<RecyclerView.OnScrollListener> getmExternalOnScrollListeners() {
+        return mExternalOnScrollListeners;
+    }
+
+    /**
+     * Add a scroll listener to the recyclerView
+     *
+     * @param externalOnScrollListener
+     */
+    public void addExternalOnScrollListener(RecyclerView.OnScrollListener externalOnScrollListener) {
+        this.mExternalOnScrollListeners.add(externalOnScrollListener);
+    }
+
+    /**
+     * Clear all scroll listeners of the recycler view
+     */
+    public void clearExternalOnScrollListeners() {
+        mExternalOnScrollListeners.clear();
+    }
+
 }

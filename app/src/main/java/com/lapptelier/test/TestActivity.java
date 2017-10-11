@@ -1,21 +1,32 @@
 package com.lapptelier.test;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.MotionEvent;
+import android.view.View;
 
 import com.lapptelier.smartrecyclerview.DrawableDividerItemDecoration;
 import com.lapptelier.smartrecyclerview.MultiGenericAdapter;
 import com.lapptelier.smartrecyclerview.SmartRecyclerView;
 import com.socks.library.KLog;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static android.speech.SpeechRecognizer.ERROR_SERVER;
 
 /**
  * @author L'Apptelier SARL
@@ -52,12 +63,20 @@ public class TestActivity extends AppCompatActivity  {
         //on sette le texte de la vue vide
         mRecyclerView.setLoadingLayout(R.layout.empty);
 
+        mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                EventBus.getDefault().post("0");
+                return false;
+            }
+        });
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 adapter.addAll(elements);
             }
-        }, 1000);
+        }, 500);
 
 
     }

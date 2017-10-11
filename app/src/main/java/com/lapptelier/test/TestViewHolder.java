@@ -4,10 +4,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.daimajia.swipe.SwipeLayout;
 import com.lapptelier.smartrecyclerview.MyViewHolder;
+import com.socks.library.KLog;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,51 +29,76 @@ class TestViewHolder extends RecyclerView.ViewHolder implements MyViewHolder<Str
     @BindView(R.id.bottom_wrapper)
     LinearLayout bottom;
 
+    String cellText;
+
     public TestViewHolder(View view) {
         super(view);
         ButterKnife.bind(this, view);
+
     }
 
+
     @Override
-    public void setItem(String text) {
+    public void setItem(final String text) {
+
+        cellText = text;
+
         textView.setText(text);
 
         //set show mode.
         swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
 
-        //add drag edge.(If the BottomView has 'layout_gravity' attribute, this line is unnecessary)
-//        swipeLayout.addDrag(SwipeLayout.DragEdge.Left, bottom);
-
         swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
             @Override
             public void onClose(SwipeLayout layout) {
-                Toast.makeText(itemView.getContext(), "onclose", Toast.LENGTH_SHORT);
+                KLog.d("onclose");
+                setBus(false);
+
             }
 
             @Override
             public void onUpdate(SwipeLayout layout, int leftOffset, int topOffset) {
-                Toast.makeText(itemView.getContext(), "onUpdate", Toast.LENGTH_SHORT);
+                KLog.d("onUpdate");
             }
 
             @Override
             public void onStartOpen(SwipeLayout layout) {
-                Toast.makeText(itemView.getContext(), "startOpen", Toast.LENGTH_SHORT);
+                KLog.d("startOpen");
             }
 
             @Override
             public void onOpen(SwipeLayout layout) {
-                Toast.makeText(itemView.getContext(), "onOpen", Toast.LENGTH_SHORT);
+                KLog.d("onOpen");
+                setBus(true);
+                EventBus.getDefault().post(text);
             }
 
             @Override
             public void onStartClose(SwipeLayout layout) {
-                Toast.makeText(itemView.getContext(), "onSmartClose", Toast.LENGTH_SHORT);
+                KLog.d("onSmartClose");
             }
 
             @Override
             public void onHandRelease(SwipeLayout layout, float xvel, float yvel) {
-                Toast.makeText(itemView.getContext(), "onHandRelease", Toast.LENGTH_SHORT);
+                KLog.d("onHandRelease");
             }
         });
+    }
+
+    public void setBus(boolean subscribe) {
+        if (subscribe) {
+            if (!EventBus.getDefault().isRegistered(this))
+                EventBus.getDefault().register(this);
+        } else {
+            if (EventBus.getDefault().isRegistered(this))
+                EventBus.getDefault().unregister(this);
+        }
+    }
+
+
+    @Subscribe
+    public void onMessageEvent(String message) {
+        if (!cellText.equals(message))
+            swipeLayout.close(true);
     }
 }
