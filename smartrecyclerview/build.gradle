@@ -20,7 +20,7 @@ apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'com.github.dcendents.android-maven'
 
-group='com.github.LApptelier'
+group='com.github.pptelier'
 
 
 android {
@@ -69,7 +69,6 @@ dependencies {
     compile "com.android.support:support-v4:$supportLibraryVersion"
     compile 'com.github.zhaokaiqiang.klog:library:1.6.0'
     compile 'com.jakewharton:butterknife:8.8.1'
-    compile "com.daimajia.swipelayout:library:1.2.0@aar"
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 }
 

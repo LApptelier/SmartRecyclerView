@@ -1,32 +1,23 @@
 package com.lapptelier.test;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.MotionEvent;
-import android.view.View;
 
 import com.lapptelier.smartrecyclerview.DrawableDividerItemDecoration;
-import com.lapptelier.smartrecyclerview.MultiGenericAdapter;
 import com.lapptelier.smartrecyclerview.SmartRecyclerView;
+import com.lapptelier.smartrecyclerview.SwipableMultiGenericAdapter;
+import com.lapptelier.smartrecyclerview.swipe.SwipeMode;
 import com.socks.library.KLog;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static android.speech.SpeechRecognizer.ERROR_SERVER;
 
 /**
  * @author L'Apptelier SARL
@@ -56,20 +47,20 @@ public class TestActivity extends AppCompatActivity  {
         });
 
         // Configuration de l'adapter
-        final MultiGenericAdapter adapter = new MultiGenericAdapter(String.class, TestViewHolder.class, R.layout.cell_test);
+        final SwipableMultiGenericAdapter adapter = new SwipableMultiGenericAdapter(String.class, TestViewHolder.class, R.layout.cell_test, R.id.swipe);
+        adapter.setMode(SwipeMode.Single);
         mRecyclerView.setAdapter(adapter);
         mRecyclerView.addItemDecoration(new DrawableDividerItemDecoration(getDrawable(R.drawable.divider), null, true));
+        mRecyclerView.addExternalOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                adapter.closeAllItems();
+            }
+        });
 
         //on sette le texte de la vue vide
         mRecyclerView.setLoadingLayout(R.layout.empty);
-
-        mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                EventBus.getDefault().post("0");
-                return false;
-            }
-        });
 
         new Handler().postDelayed(new Runnable() {
             @Override

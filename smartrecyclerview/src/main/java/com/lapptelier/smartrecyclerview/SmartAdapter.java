@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
  * com.lapptelier.smartrecyclerview.smart_recycler_view.SmartAdapter
  * <p/>
@@ -17,7 +18,7 @@ import java.util.List;
  * @author L'Apptelier SARL
  * @date 14/09/2017
  */
-public abstract class SmartAdapter<V extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<V> {
+public abstract class SmartAdapter<V extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<V>{
 
     public List items; // Adapter's idem list
 
