@@ -61,6 +61,7 @@ public abstract class SmartAdapter<V extends RecyclerView.ViewHolder> extends Re
      */
     public void addAll(List<?> items) {
         this.items.addAll(items);
+        this.notifyItemRangeChanged(this.items.size() > 1 ? this.items.size() - 1 : 0, this.items.size());
         this.notifyDataSetChanged();
     }
 
@@ -76,6 +77,8 @@ public abstract class SmartAdapter<V extends RecyclerView.ViewHolder> extends Re
         } else {
             this.items.add(item);
         }
+        this.notifyItemInserted(position);
+        this.notifyItemRangeChanged(position, this.items.size());
         this.notifyDataSetChanged();
     }
 
@@ -87,6 +90,8 @@ public abstract class SmartAdapter<V extends RecyclerView.ViewHolder> extends Re
     public void removeAt(int position) {
         if (position < items.size()) {
             this.items.remove(position);
+            this.notifyItemRemoved(position);
+            this.notifyItemRangeChanged(position, this.items.size());
             this.notifyDataSetChanged();
         }
     }
@@ -100,6 +105,7 @@ public abstract class SmartAdapter<V extends RecyclerView.ViewHolder> extends Re
     public void replaceAt(int position, Object item) {
         if (position < items.size()) {
             this.items.set(position, item);
+            this.notifyItemChanged(position, item);
             this.notifyDataSetChanged();
         }
     }
@@ -125,6 +131,8 @@ public abstract class SmartAdapter<V extends RecyclerView.ViewHolder> extends Re
      */
     public void add(Object item) {
         this.items.add(item);
+        this.notifyItemRangeChanged(this.items.size() > 1 ? this.items.size() - 1 : 0, this.items.size());
+        this.notifyDataSetChanged();
     }
 
     /**
