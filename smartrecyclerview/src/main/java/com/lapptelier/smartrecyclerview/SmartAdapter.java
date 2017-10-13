@@ -91,8 +91,6 @@ public abstract class SmartAdapter<V extends RecyclerView.ViewHolder> extends Re
         if (position < items.size()) {
             this.items.remove(position);
             this.notifyItemRemoved(position);
-            this.notifyItemRangeChanged(position, this.items.size());
-            this.notifyDataSetChanged();
         }
     }
 
@@ -106,7 +104,6 @@ public abstract class SmartAdapter<V extends RecyclerView.ViewHolder> extends Re
         if (position < items.size()) {
             this.items.set(position, item);
             this.notifyItemChanged(position, item);
-            this.notifyDataSetChanged();
         }
     }
 
@@ -132,7 +129,6 @@ public abstract class SmartAdapter<V extends RecyclerView.ViewHolder> extends Re
     public void add(Object item) {
         this.items.add(item);
         this.notifyItemRangeChanged(this.items.size() > 1 ? this.items.size() - 1 : 0, this.items.size());
-        this.notifyDataSetChanged();
     }
 
     /**

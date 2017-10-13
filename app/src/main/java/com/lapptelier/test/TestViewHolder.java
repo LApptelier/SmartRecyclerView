@@ -5,7 +5,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.lapptelier.smartrecyclerview.MyViewHolder;
-import com.lapptelier.smartrecyclerview.swipe.SwipeLayout;
+
+import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -17,9 +18,6 @@ import butterknife.ButterKnife;
 class TestViewHolder extends RecyclerView.ViewHolder implements MyViewHolder<String> {
     @BindView(R.id.text)
     TextView textView;
-
-    @BindView(R.id.swipe)
-    SwipeLayout swipeLayout;
 
     String cellText;
 
@@ -34,6 +32,12 @@ class TestViewHolder extends RecyclerView.ViewHolder implements MyViewHolder<Str
         cellText = text;
         textView.setText(text);
 
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EventBus.getDefault().post(text);
+            }
+        });
     }
 
 }

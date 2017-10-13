@@ -1,5 +1,6 @@
 package com.lapptelier.test;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -10,6 +11,9 @@ import com.lapptelier.smartrecyclerview.DrawableDividerItemDecoration;
 import com.lapptelier.smartrecyclerview.MultiGenericAdapter;
 import com.lapptelier.smartrecyclerview.SmartRecyclerView;
 import com.socks.library.KLog;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,6 +29,8 @@ public class TestActivity extends AppCompatActivity {
 
     @BindView(R.id.test_smart_recycler_view)
     SmartRecyclerView mRecyclerView;
+
+    MultiGenericAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,9 +51,13 @@ public class TestActivity extends AppCompatActivity {
         });
 
         // Configuration de l'adapter
-        final MultiGenericAdapter adapter = new MultiGenericAdapter(String.class, TestViewHolder.class, R.layout.cell_test, R.id.swipe);
+        adapter = new MultiGenericAdapter(String.class, TestViewHolder.class, R.layout.cell_test);
         mRecyclerView.setAdapter(adapter);
-        mRecyclerView.addItemDecoration(new DrawableDividerItemDecoration(getDrawable(R.drawable.divider), null, true));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mRecyclerView.addItemDecoration(new DrawableDividerItemDecoration(getDrawable(R.drawable.divider), null, true));
+        } else {
+            mRecyclerView.addItemDecoration(new DrawableDividerItemDecoration(getResources().getDrawable(R.drawable.divider), null, true));
+        }
 
         //on sette le texte de la vue vide
         mRecyclerView.setLoadingLayout(R.layout.empty);
@@ -60,5 +70,22 @@ public class TestActivity extends AppCompatActivity {
         }, 500);
 
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onPause() {
+        EventBus.getDefault().unregister(this);
+        super.onPause();
+    }
+
+    @Subscribe
+    public void onMessageReceived(String message){
+        adapter.removeAt(adapter.getObjectIndex(message));
     }
 }
