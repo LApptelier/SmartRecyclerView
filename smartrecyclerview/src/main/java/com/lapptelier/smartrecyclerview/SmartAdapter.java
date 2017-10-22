@@ -18,7 +18,7 @@ import java.util.List;
  * @author L'Apptelier SARL
  * @date 14/09/2017
  */
-public abstract class SmartAdapter<V extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<V>{
+public abstract class SmartAdapter<V extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<V> {
 
     public List items; // Adapter's idem list
 
@@ -61,7 +61,17 @@ public abstract class SmartAdapter<V extends RecyclerView.ViewHolder> extends Re
      */
     public void addAll(List<?> items) {
         this.items.addAll(items);
-        this.notifyItemRangeChanged(this.items.size() > 1 ? this.items.size() - 1 : 0, this.items.size());
+        this.notifyDataSetChanged();
+    }
+
+    /**
+     * Add all the given items to the item list.
+     *
+     * @param items    items to add
+     * @param position position to insert elements into
+     */
+    public void insertAll(List<?> items, int position) {
+        this.items.addAll(position, items);
         this.notifyDataSetChanged();
     }
 
@@ -78,8 +88,6 @@ public abstract class SmartAdapter<V extends RecyclerView.ViewHolder> extends Re
             this.items.add(item);
         }
         this.notifyItemInserted(position);
-        this.notifyItemRangeChanged(position, this.items.size());
-        this.notifyDataSetChanged();
     }
 
     /**
@@ -111,7 +119,7 @@ public abstract class SmartAdapter<V extends RecyclerView.ViewHolder> extends Re
      * Return the item at the given position
      *
      * @param position position of the item
-     *                 @return the item at the given position, null otherwise
+     * @return the item at the given position, null otherwise
      */
     public Object getItemAt(int position) {
         if (position < 0 || position > this.items.size() - 1) {

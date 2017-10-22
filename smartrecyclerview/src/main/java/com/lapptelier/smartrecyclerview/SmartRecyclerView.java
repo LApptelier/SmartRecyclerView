@@ -104,7 +104,6 @@ public class SmartRecyclerView extends LinearLayout {
         if (isInEditMode()) {
             return;
         }
-
         mExternalOnScrollListeners = new ArrayList<>();
 
         LayoutInflater inflater = LayoutInflater.from(getContext());
@@ -383,12 +382,25 @@ public class SmartRecyclerView extends LinearLayout {
     }
 
     /**
+     * Insert all given items in the RecyclerView' Adapter list
+     *
+     * @param items    items to add
+     * @param position position unto add items
+     */
+    public void insertAll(List<?> items, int position) {
+        if (mAdapter != null) {
+            this.deletePlaceholder();
+            this.mAdapter.insertAll(items, position);
+        }
+    }
+
+    /**
      * Delete all placeholders
      */
     private void deletePlaceholder() {
         if (mAdapter != null && mAdapter.contains(placeHolderCell)) {
             KLog.d("deletePlaceholder", "done");
-            //on attaque directement la liste pr éviter les callbacks supplémentaires lors de l'ajout/suppression d'éléments
+            //removing directly to the adapter list to avoid firing callbacks
             mAdapter.items.remove(mAdapter.getItemCount() - 1);
         }
     }
@@ -607,4 +619,11 @@ public class SmartRecyclerView extends LinearLayout {
         mExternalOnScrollListeners.clear();
     }
 
+    /**
+     * Scroll to the bottom of the list
+     */
+    public void scrollToBottom() {
+        if (mRecyclerView != null && mAdapter != null && mAdapter.getItemCount() > 0)
+            mRecyclerView.scrollToPosition(mAdapter.getItemCount() - 1);
+    }
 }
