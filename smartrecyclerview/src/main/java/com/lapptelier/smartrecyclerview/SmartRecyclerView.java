@@ -237,27 +237,30 @@ public class SmartRecyclerView extends LinearLayout {
         isLoadingMore = false;
 
         //hidding swipe to refresh too
+        if(mSwipeLayout != null)
         mSwipeLayout.setRefreshing(false);
 
-        if (mAdapter.isEmpty()) {
-            if (mEmptyView != null)
-                mEmptyView.setVisibility(View.VISIBLE);
-        } else {
-            if (mEmptyView != null)
-                mEmptyView.setVisibility(View.GONE);
-            //if there is more item to load, adding a placeholder cell at the end to display the load more
-            if (shouldLoadMore) {
-                if (!mAdapter.contains(placeHolderCell) && loadMoreLayout > -1) {
-                    //adding directly to the adapter list to avoid firing callbacks
-                    mAdapter.items.add(placeHolderCell);
-
-                    //adding the viewHolder (this is safe to add without prior check, as the adapter is smart enought to not add it twice)
-                    if (mAdapter instanceof GenericViewHolderAdapter)
-                        ((MultiGenericAdapter) mAdapter).addViewHolderType(PlaceHolderCell.class, PlaceHolderViewHolder.class, loadMoreLayout);
-                }
+        if(mAdapter != null) {
+            if (mAdapter.isEmpty()) {
+                if (mEmptyView != null)
+                    mEmptyView.setVisibility(View.VISIBLE);
             } else {
-                if (mAdapter.contains(placeHolderCell)) {
-                    mAdapter.removeAt(mAdapter.getObjectIndex(placeHolderCell));
+                if (mEmptyView != null)
+                    mEmptyView.setVisibility(View.GONE);
+                //if there is more item to load, adding a placeholder cell at the end to display the load more
+                if (shouldLoadMore) {
+                    if (!mAdapter.contains(placeHolderCell) && loadMoreLayout > -1) {
+                        //adding directly to the adapter list to avoid firing callbacks
+                        mAdapter.items.add(placeHolderCell);
+
+                        //adding the viewHolder (this is safe to add without prior check, as the adapter is smart enought to not add it twice)
+                        if (mAdapter instanceof GenericViewHolderAdapter)
+                            ((MultiGenericAdapter) mAdapter).addViewHolderType(PlaceHolderCell.class, PlaceHolderViewHolder.class, loadMoreLayout);
+                    }
+                } else {
+                    if (mAdapter.contains(placeHolderCell)) {
+                        mAdapter.removeAt(mAdapter.getObjectIndex(placeHolderCell));
+                    }
                 }
             }
         }
