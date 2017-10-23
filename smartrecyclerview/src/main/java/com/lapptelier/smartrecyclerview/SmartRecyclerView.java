@@ -59,7 +59,7 @@ public class SmartRecyclerView extends LinearLayout {
     protected OnMoreListener mOnMoreListener;
 
     // generic adapter
-    protected SmartAdapter mAdapter;
+    protected AbstractGenericAdapter mAdapter;
 
     // id of the load more layout
     protected int loadMoreLayout;
@@ -182,7 +182,7 @@ public class SmartRecyclerView extends LinearLayout {
      *
      * @param adapter inner RecyclerView' adapter
      */
-    public void setAdapter(final SmartAdapter adapter) {
+    public void setAdapter(final AbstractGenericAdapter adapter) {
         mAdapter = adapter;
         if (mRecyclerView != null) {
             mRecyclerView.setAdapter(mAdapter);
@@ -220,6 +220,11 @@ public class SmartRecyclerView extends LinearLayout {
                     updateAccessoryViews();
                 }
 
+                @Override
+                public void onItemRangeChanged(int positionStart, int itemCount, Object payload) {
+                    super.onItemRangeChanged(positionStart, itemCount, payload);
+                    updateAccessoryViews();
+                }
             });
         }
 
@@ -252,7 +257,7 @@ public class SmartRecyclerView extends LinearLayout {
                     mAdapter.items.add(placeHolderCell);
 
                     //adding the viewHolder (this is safe to add without prior check, as the adapter is smart enought to not add it twice)
-                    if (mAdapter.getClass().equals(MultiGenericAdapter.class))
+                    if (mAdapter instanceof GenericViewHolderAdapter)
                         ((MultiGenericAdapter) mAdapter).addViewHolderType(PlaceHolderCell.class, PlaceHolderViewHolder.class, loadMoreLayout);
                 }
             }
@@ -290,6 +295,7 @@ public class SmartRecyclerView extends LinearLayout {
     public void setupMoreListener(OnMoreListener onMoreListener, int max) {
         mOnMoreListener = onMoreListener;
         ITEM_LEFT_TO_LOAD_MORE = max;
+        shouldLoadMore = true;
     }
 
     /**

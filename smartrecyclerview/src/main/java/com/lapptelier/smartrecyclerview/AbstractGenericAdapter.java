@@ -7,7 +7,7 @@ import java.util.List;
 
 
 /**
- * com.lapptelier.smartrecyclerview.smart_recycler_view.SmartAdapter
+ * com.lapptelier.smartrecyclerview.smart_recycler_view.AbstractGenericAdapter
  * <p/>
  * Generic implementation of a {@see RecyclerView.Adapter}.
  * <p/>
@@ -18,14 +18,14 @@ import java.util.List;
  * @author L'Apptelier SARL
  * @date 14/09/2017
  */
-public abstract class SmartAdapter<V extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<V> {
+public abstract class AbstractGenericAdapter<V extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<V> {
 
     public List items; // Adapter's idem list
 
     /**
      * Empty Constructor
      */
-    public SmartAdapter() {
+    public AbstractGenericAdapter() {
         this.items = new ArrayList();
     }
 

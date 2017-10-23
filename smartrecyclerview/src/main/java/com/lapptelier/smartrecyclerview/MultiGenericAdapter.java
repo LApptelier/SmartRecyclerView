@@ -17,12 +17,12 @@ import static android.support.v7.widget.RecyclerView.ViewHolder;
  * <p/>
  * Generic implementation of a {@see SmartAdapter} that can manager multiple item type and their corresponding ViewHolders.
  * <p/>
- * Sub class of {@link SmartAdapter}.
+ * Sub class of {@link AbstractGenericAdapter}.
  *
  * @author L'Apptelier SARL
  * @date 14/09/2017
  */
-public class MultiGenericAdapter extends SmartAdapter {
+public class MultiGenericAdapter extends AbstractGenericAdapter implements GenericViewHolderAdapter{
 
     private Map<Class<? extends ViewHolder>, Integer> fragmentResources; // List of all ViewHolders' layout ressource_id
     private Map<Class<?>, Class<? extends ViewHolder>> viewHolderForClass; // Map of all corresponding ViewHolders classes for a given item class
@@ -85,24 +85,14 @@ public class MultiGenericAdapter extends SmartAdapter {
     }
 
 
-    /**
-     * Add a new ViewHolder class for an item class
-     *
-     * @param itemClass         class of an item in the list
-     * @param viewHolderClass   associated view holde class for the given class
-     * @param fragment_resource ressources_id of the layout for the given ViewHolder class
-     */
+    @Override
     public void addViewHolderType(Class<?> itemClass, Class<? extends ViewHolder> viewHolderClass, int fragment_resource) {
         this.viewHolderForClass.put(itemClass, viewHolderClass);
         this.fragmentResources.put(viewHolderClass, fragment_resource);
         this.viewHolders.put(fragment_resource, viewHolderClass);
     }
 
-    /**
-     * Remove a ViewHolder class
-     *
-     * @param viewHolderClass ViewHolder class to remove
-     */
+    @Override
     public void removeViewHolderType(Class<? extends ViewHolder> viewHolderClass) {
         if (this.viewHolders.containsKey(viewHolderForClass.get(viewHolderClass)))
             this.viewHolders.remove(viewHolderForClass.get(viewHolderClass));
