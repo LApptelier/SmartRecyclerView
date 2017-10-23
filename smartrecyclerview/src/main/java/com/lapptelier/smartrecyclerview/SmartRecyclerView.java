@@ -255,6 +255,10 @@ public class SmartRecyclerView extends LinearLayout {
                     if (mAdapter instanceof GenericViewHolderAdapter)
                         ((MultiGenericAdapter) mAdapter).addViewHolderType(PlaceHolderCell.class, PlaceHolderViewHolder.class, loadMoreLayout);
                 }
+            } else {
+                if (mAdapter.contains(placeHolderCell)) {
+                    mAdapter.removeAt(mAdapter.getObjectIndex(placeHolderCell));
+                }
             }
         }
     }
@@ -321,6 +325,7 @@ public class SmartRecyclerView extends LinearLayout {
      */
     public void shouldLoadMore(boolean shouldLoadMore) {
         this.shouldLoadMore = shouldLoadMore;
+        updateAccessoryViews();
     }
 
     /**
