@@ -128,8 +128,7 @@ public class SmartRecyclerView extends LinearLayout {
                     if (recyclerView.getLayoutManager().getClass().equals(LinearLayoutManager.class)) {
                         LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
 
-                        if (((!layoutManager.getReverseLayout() && (layoutManager.findLastVisibleItemPosition() >= (layoutManager.getItemCount() - ITEM_LEFT_TO_LOAD_MORE))) ||
-                                (layoutManager.getReverseLayout() && (layoutManager.findLastVisibleItemPosition() <= ITEM_LEFT_TO_LOAD_MORE)))
+                        if (layoutManager.findLastVisibleItemPosition() >= layoutManager.getItemCount() - ITEM_LEFT_TO_LOAD_MORE
                                 && !isLoadingMore && shouldLoadMore) {
 
                             isLoadingMore = true;
