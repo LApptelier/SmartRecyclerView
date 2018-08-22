@@ -39,5 +39,4 @@ class TestViewHolder extends RecyclerView.ViewHolder implements MyViewHolder<Str
             }
         });
     }
-
 }

@@ -1,10 +1,10 @@
 buildscript {
     repositories {
         mavenCentral()
+        google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
-        classpath 'com.jakewharton:butterknife-gradle-plugin:8.8.1'
+        classpath 'com.android.tools.build:gradle:3.1.4'
         // used to generate a POM file
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
     }
@@ -15,24 +15,22 @@ plugins {
 }
 
 apply plugin: 'com.android.library'
-apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
-apply plugin: 'com.github.dcendents.android-maven'
 
-group='com.github.LApptelier'
-
+group = 'com.github.LApptelier'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 27
     buildToolsVersion "26.0.2"
 
     defaultConfig {
         minSdkVersion 19
-        targetSdkVersion 26
-        versionCode 3
-        versionName "1.0.0"
-
+        targetSdkVersion 27
+        versionCode 4
+        versionName "2.0.0-Alpha-1"
     }
 
     buildTypes {
@@ -55,21 +53,22 @@ allprojects {
 }
 
 
-ext{
-    supportLibraryVersion = '26.1.0'
+ext {
+    supportLibraryVersion = '27.1.1'
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    compile "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.19.3"
+    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile "com.android.support:recyclerview-v7:$supportLibraryVersion"
     compile "com.android.support:appcompat-v7:$supportLibraryVersion"
     compile "com.android.support:support-v4:$supportLibraryVersion"
-    compile 'com.github.zhaokaiqiang.klog:library:1.6.0'
-    compile 'com.jakewharton:butterknife:8.8.1'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 }
 
 bintray {
@@ -101,10 +100,10 @@ install {
     repositories.mavenInstaller {
         pom.project {
             group = 'com.lapptelier.smartrecyclerview'
-            version = '1.0.0-Alpha-1'
+            version = '2.0.0-Alpha-1'
             group "com.codepath.libraries"
             artifactId "smartrecyclerview"
-            version "1.0.0-Alpha-1"
+            version "2.0.0-Alpha-1"
         }
     }
 }
