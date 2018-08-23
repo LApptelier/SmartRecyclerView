@@ -77,7 +77,7 @@ class MultiGenericAdapter<V : RecyclerView.ViewHolder?>
 
     @Suppress("UNCHECKED_CAST")
     override fun onBindViewHolder(holder: V, index: Int) {
-        (holder as MyViewHolder<Any?>).setItem(items!![index], listener)
+        (holder as SmartViewHolder<Any?>).setItem(items!![index], listener)
     }
 
     override fun getItemViewType(position: Int): Int {

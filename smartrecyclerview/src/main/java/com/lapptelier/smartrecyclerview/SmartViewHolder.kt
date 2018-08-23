@@ -9,7 +9,7 @@ package com.lapptelier.smartrecyclerview
  * @author L'Apptelier SARL
  * @date 14/09/2017
  */
-interface MyViewHolder<T> {
+interface SmartViewHolder<T> {
 
     fun setItem(item: T, listener: ViewHolderInteractionListener)
 }
