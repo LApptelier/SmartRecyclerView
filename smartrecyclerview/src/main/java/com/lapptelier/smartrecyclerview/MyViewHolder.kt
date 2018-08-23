@@ -11,5 +11,5 @@ package com.lapptelier.smartrecyclerview
  */
 interface MyViewHolder<T> {
 
-    fun setItem(t: T)
+    fun setItem(item: T, listener: ViewHolderInteractionListener)
 }

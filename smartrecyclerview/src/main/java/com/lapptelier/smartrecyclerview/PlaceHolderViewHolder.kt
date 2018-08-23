@@ -15,11 +15,12 @@ import android.view.View
  * @date 14/09/2017
  */
 class PlaceHolderViewHolder(view: View) : RecyclerView.ViewHolder(view), MyViewHolder<PlaceHolderCell> {
+
+    override fun setItem(item: PlaceHolderCell, listener: ViewHolderInteractionListener) {
+    }
+
     init {
     }
 
-    override fun setItem(placeHolderCell: PlaceHolderCell) {
-
-    }
 
 }

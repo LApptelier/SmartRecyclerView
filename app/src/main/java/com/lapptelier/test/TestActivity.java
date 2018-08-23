@@ -10,10 +10,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import com.lapptelier.smartrecyclerview.DrawableDividerItemDecoration;
 import com.lapptelier.smartrecyclerview.MultiGenericAdapter;
 import com.lapptelier.smartrecyclerview.SmartRecyclerView;
+import com.lapptelier.smartrecyclerview.ViewHolderInteractionListener;
 import com.socks.library.KLog;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,7 +25,7 @@ import butterknife.ButterKnife;
  * @author L'Apptelier SARL
  * @date 14/09/2017
  */
-public class TestActivity extends AppCompatActivity {
+public class TestActivity extends AppCompatActivity implements ViewHolderInteractionListener {
 
     @BindView(R.id.test_smart_recycler_view)
     SmartRecyclerView mRecyclerView;
@@ -51,7 +51,7 @@ public class TestActivity extends AppCompatActivity {
         });
 
         // Configuration de l'adapter
-        adapter = new MultiGenericAdapter(String.class, TestViewHolder.class, R.layout.cell_test);
+        adapter = new MultiGenericAdapter(String.class, TestViewHolder.class, R.layout.cell_test, this);
         mRecyclerView.setAdapter(adapter);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mRecyclerView.addItemDecoration(new DrawableDividerItemDecoration(getDrawable(R.drawable.divider), null, true));
@@ -75,17 +75,20 @@ public class TestActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        EventBus.getDefault().register(this);
     }
 
     @Override
     protected void onPause() {
-        EventBus.getDefault().unregister(this);
         super.onPause();
     }
 
-    @Subscribe
-    public void onMessageReceived(String message){
-        adapter.removeAt(adapter.getObjectIndex(message));
+    @Override
+    public void onItemClicked(@NotNull Object item) {
+        adapter.removeAt(adapter.getObjectIndex(item));
+    }
+
+    @Override
+    public void onItemAction(@NotNull Object item, int action) {
+
     }
 }

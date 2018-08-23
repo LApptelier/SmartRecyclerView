@@ -38,7 +38,7 @@ class SmartRecyclerView : LinearLayout {
     private var mRecyclerView: RecyclerView? = null
 
     // swipe layout
-    var mSwipeLayout: SwipeRefreshLayout? = null
+    var swipeLayout: SwipeRefreshLayout? = null
 
     // placeholder on the loading of the list
     var mLoadingViewStub: ViewStub? = null
@@ -78,7 +78,7 @@ class SmartRecyclerView : LinearLayout {
     var mOnMoreListener: OnMoreListener? = null
 
     // Generic adapter
-    var mAdapter: AbstractGenericAdapter<RecyclerView.ViewHolder>? = null
+    var mAdapter: MultiGenericAdapter<RecyclerView.ViewHolder>? = null
 
     // Id of the load more layout
     var loadMoreLayout: Int = 0
@@ -149,7 +149,7 @@ class SmartRecyclerView : LinearLayout {
         mRecyclerView = view.smart_list_recycler
         mEmptyViewStub = view.smart_list_empty_stub
         mLoadingViewStub = view.smart_list_loading_stub
-        mSwipeLayout = view.smart_list_swipe_layout
+        swipeLayout = view.smart_list_swipe_layout
 
         if (mRecyclerView != null) {
             mInternalOnScrollListener = object : RecyclerView.OnScrollListener() {
@@ -207,7 +207,7 @@ class SmartRecyclerView : LinearLayout {
      *
      * @param adapter inner RecyclerView' adapter
      */
-    fun setAdapter(adapter: AbstractGenericAdapter<RecyclerView.ViewHolder>) {
+    fun setAdapter(adapter: MultiGenericAdapter<RecyclerView.ViewHolder>) {
         mAdapter = adapter
         if (mRecyclerView != null) {
             mRecyclerView!!.adapter = mAdapter
@@ -261,8 +261,8 @@ class SmartRecyclerView : LinearLayout {
         isLoadingMore = false
 
         //hidding swipe to refresh too
-        if (mSwipeLayout != null)
-            mSwipeLayout!!.isRefreshing = false
+        if (swipeLayout != null)
+            swipeLayout!!.isRefreshing = false
 
         if (mAdapter != null) {
             if (mAdapter!!.isEmpty) {
@@ -278,8 +278,8 @@ class SmartRecyclerView : LinearLayout {
                         mAdapter!!.items!!.add(placeHolderCell)
 
                         //adding the viewHolder (this is safe to add without prior check, as the adapter is smart enought to not add it twice)
-                        if (mAdapter is GenericViewHolderAdapter)
-                            (mAdapter as MultiGenericAdapter).addViewHolderType(PlaceHolderCell::class.java, PlaceHolderViewHolder::class.java, loadMoreLayout)
+                        if (mAdapter is MultiGenericAdapter<*>)
+                            (mAdapter as MultiGenericAdapter<*>).addViewHolderType(PlaceHolderCell::class.java, PlaceHolderViewHolder::class.java, loadMoreLayout)
                     }
                 } else {
                     if (mAdapter!!.contains(placeHolderCell)) {
@@ -296,20 +296,10 @@ class SmartRecyclerView : LinearLayout {
      * @param listener the RecyclerView' SwipeRefreshListener
      */
     fun setRefreshListener(listener: SwipeRefreshLayout.OnRefreshListener) {
-        if (mSwipeLayout != null) {
-            mSwipeLayout!!.isEnabled = true
-            mSwipeLayout!!.setOnRefreshListener(listener)
+        if (swipeLayout != null) {
+            swipeLayout!!.isEnabled = true
+            swipeLayout!!.setOnRefreshListener(listener)
         }
-    }
-
-    /**
-     * Add a the RecyclerView' OnItemTouchListener
-     *
-     * @param listener a RecyclerView' OnItemTouchListener
-     */
-    fun addOnItemTouchListener(listener: RecyclerView.OnItemTouchListener) {
-        if (mRecyclerView != null)
-            mRecyclerView!!.addOnItemTouchListener(listener)
     }
 
     /**
@@ -341,8 +331,8 @@ class SmartRecyclerView : LinearLayout {
      * @param display true to display the pull-to-refresh, false otherwise
      */
     fun displaySwipeToRefresh(display: Boolean) {
-        if (mSwipeLayout != null)
-            mSwipeLayout!!.isEnabled = display
+        if (swipeLayout != null)
+            swipeLayout!!.isEnabled = display
     }
 
 
@@ -382,130 +372,17 @@ class SmartRecyclerView : LinearLayout {
     fun displayLoadingView() {
         //si on a un PTR de setté, on l'affiche, sinon on affiche le message de chargement
         if (mAdapter != null && mAdapter!!.itemCount > 0) {
-            if (mSwipeLayout != null && !mSwipeLayout!!.isRefreshing) {
+            if (swipeLayout != null && !swipeLayout!!.isRefreshing) {
                 // on affiche le PTR
                 val typed_value = TypedValue()
                 context.theme.resolveAttribute(android.support.v7.appcompat.R.attr.actionBarSize, typed_value, true)
-                mSwipeLayout!!.setProgressViewOffset(false, 0, resources.getDimensionPixelSize(typed_value.resourceId))
-                mSwipeLayout!!.isRefreshing = true
+                swipeLayout!!.setProgressViewOffset(false, 0, resources.getDimensionPixelSize(typed_value.resourceId))
+                swipeLayout!!.isRefreshing = true
             }
         } else {
             if (loadingView != null)
                 this.loadingView!!.visibility = View.VISIBLE
         }
-    }
-
-    /**
-     * Clear all elements in the RecyclerView' Adapter list
-     */
-    fun clear() {
-        if (mAdapter != null)
-            mAdapter!!.clear()
-    }
-
-    /**
-     * Add all given items in the RecyclerView' Adapter list
-     *
-     * @param items item to add
-     */
-    fun addAll(items: List<Any>) {
-        if (mAdapter != null) {
-            this.deletePlaceholder()
-            mAdapter!!.addAll(items)
-        }
-    }
-
-    /**
-     * Insert all given items in the RecyclerView' Adapter list
-     *
-     * @param items    items to add
-     * @param position position unto add items
-     */
-    fun insertAll(items: List<Any>, position: Int) {
-        if (mAdapter != null) {
-            this.deletePlaceholder()
-            this.mAdapter!!.insertAll(items, position)
-        }
-    }
-
-    /**
-     * Delete all placeholders
-     */
-    private fun deletePlaceholder() {
-        if (mAdapter != null && mAdapter!!.contains(placeHolderCell)) {
-            //removing directly to the adapter list to avoid firing callbacks
-            mAdapter!!.items!!.removeAt(mAdapter!!.itemCount - 1)
-        }
-    }
-
-    /**
-     * Append an item to the RecyclerView' Adapter list
-     *
-     * @param item item to append
-     */
-    fun add(item: Any) {
-        if (mAdapter != null) {
-            this.deletePlaceholder()
-            mAdapter!!.add(item)
-        }
-    }
-
-    /**
-     * Insert a given item at a given position in the RecyclerView' Adapter list
-     *
-     * @param item     item to insert
-     * @param position position to insert to
-     */
-    fun insertAt(position: Int, item: Any) {
-        if (mAdapter != null)
-            mAdapter!!.insertAt(position, item)
-    }
-
-    /**
-     * Delete an item from the RecyclerView' Adapter list
-     *
-     * @param position position of the item to delete
-     */
-    fun removeAt(position: Int) {
-        if (mAdapter != null)
-            mAdapter!!.removeAt(position)
-    }
-
-    /**
-     * Replace an item at a given position by another given item of the RecyclerView' Adapter list
-     *
-     * @param position position of the item to replace
-     * @param item     new item
-     */
-    fun replaceAt(position: Int, item: Any) {
-        if (mAdapter != null)
-            mAdapter!!.replaceAt(position, item)
-    }
-
-    /**
-     * Return the RecyclerView' Adapter item at the given position
-     *
-     * @param position position of the item
-     * @return the item at the given position, null otherwise
-     */
-    fun getItemAt(position: Int): Any? {
-        return if (mAdapter != null)
-            mAdapter!!.getItemAt(position)
-        else
-            null
-    }
-
-    /**
-     * Return the position in the RecyclerView' Adapter list of the given item
-     *
-     * @param object item to search in the list
-     * @return item's position if found, -1 otherwise
-     */
-    fun getObjectIndex(`object`: Any): Int {
-        return if (mAdapter != null)
-            mAdapter!!.getObjectIndex(`object`)
-        else
-            -1
     }
 
     /**
@@ -516,14 +393,6 @@ class SmartRecyclerView : LinearLayout {
     fun smoothScrollTo(position: Int) {
         if (mRecyclerView != null)
             this.mRecyclerView!!.smoothScrollToPosition(position)
-    }
-
-    /**
-     * Tell the recycler view that its data has been changed
-     */
-    fun notifyDataSetChanged() {
-        if (mAdapter != null)
-            this.mAdapter!!.notifyDataSetChanged()
     }
 
     /**
@@ -546,20 +415,6 @@ class SmartRecyclerView : LinearLayout {
             mRecyclerView!!.setBackgroundColor(color)
     }
 
-
-    /**
-     * Set the color scheme of the loading and loadmore circular progress bar
-     *
-     * @param color1 color used on the circular progress bar
-     * @param color2 color used on the circular progress bar
-     * @param color3 color used on the circular progress bar
-     * @param color4 color used on the circular progress bar
-     */
-    fun setProgressColorScheme(color1: Int, color2: Int, color3: Int, color4: Int) {
-        if (mSwipeLayout != null)
-            mSwipeLayout!!.setColorSchemeResources(color1, color2, color3, color4)
-    }
-
     /**
      * Scroll the recycler view to its top
      */
@@ -579,7 +434,7 @@ class SmartRecyclerView : LinearLayout {
     /**
      * @return the scroll listeners of the recyclerView
      */
-    fun getmExternalOnScrollListeners(): List<RecyclerView.OnScrollListener> {
+    fun getExternalOnScrollListeners(): List<RecyclerView.OnScrollListener> {
         return mExternalOnScrollListeners
     }
 
