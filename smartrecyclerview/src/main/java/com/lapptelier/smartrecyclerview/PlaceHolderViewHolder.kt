@@ -14,13 +14,8 @@ import android.view.View
  * @author L'Apptelier SARL
  * @date 14/09/2017
  */
-class PlaceHolderViewHolder(view: View) : RecyclerView.ViewHolder(view), SmartViewHolder<PlaceHolderCell> {
-
+class PlaceHolderViewHolder(view: View) : SmartViewHolder<PlaceHolderCell>(view) {
     override fun setItem(item: PlaceHolderCell, listener: ViewHolderInteractionListener) {
+        //unused
     }
-
-    init {
-    }
-
-
 }

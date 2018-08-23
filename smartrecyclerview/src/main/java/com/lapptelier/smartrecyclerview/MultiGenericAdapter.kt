@@ -22,7 +22,7 @@ import kotlin.NoSuchElementException
  * @author L'Apptelier SARL
  * @date 14/09/2017
  */
-class MultiGenericAdapter<V : RecyclerView.ViewHolder?>
+class MultiGenericAdapter
 
 /**
  * Full constructor
@@ -31,7 +31,7 @@ class MultiGenericAdapter<V : RecyclerView.ViewHolder?>
  * @param viewHolderClass   associated view holde class for the given class
  * @param fragment_resource ressources_id of the layout for the given ViewHolder class
  */
-(itemClass: Class<*>, viewHolderClass: Class<out ViewHolder>, fragment_resource: Int, listener: ViewHolderInteractionListener) : GenericViewHolderAdapter, RecyclerView.Adapter<V>() {
+(itemClass: Class<*>, viewHolderClass: Class<out ViewHolder>, fragment_resource: Int, listener: ViewHolderInteractionListener) : GenericViewHolderAdapter, RecyclerView.Adapter<ViewHolder>() {
 
     private val fragmentResources: MutableMap<Class<out ViewHolder>, Int> // List of all ViewHolders' layout ressource_id
     private val viewHolderForClass: MutableMap<Class<*>, Class<out ViewHolder>> // Map of all corresponding ViewHolders classes for a given item class
@@ -54,7 +54,7 @@ class MultiGenericAdapter<V : RecyclerView.ViewHolder?>
 
 
     @Suppress("UNCHECKED_CAST")
-    override fun onCreateViewHolder(viewGroup: ViewGroup, index: Int): V {
+    override fun onCreateViewHolder(viewGroup: ViewGroup, index: Int): ViewHolder {
 
         if (index > -1) {
             //getting the ViewHolder class for a given item position
@@ -65,7 +65,7 @@ class MultiGenericAdapter<V : RecyclerView.ViewHolder?>
             //getting the constuctor of the ViewHolder by instropection
             try {
                 val constructor = viewHolderClass!!.getConstructor(View::class.java)
-                return constructor.newInstance(view) as V
+                return constructor.newInstance(view) as ViewHolder
             } catch (exception: Exception) {
                 Log.e("MultiGenericAdapter", "exception while creating viewHolder", exception)
             }
@@ -76,7 +76,7 @@ class MultiGenericAdapter<V : RecyclerView.ViewHolder?>
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun onBindViewHolder(holder: V, index: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, index: Int) {
         (holder as SmartViewHolder<Any?>).setItem(items!![index], listener)
     }
 

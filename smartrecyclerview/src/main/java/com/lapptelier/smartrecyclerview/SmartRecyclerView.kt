@@ -78,7 +78,7 @@ class SmartRecyclerView : LinearLayout {
     var mOnMoreListener: OnMoreListener? = null
 
     // Generic adapter
-    var mAdapter: MultiGenericAdapter<RecyclerView.ViewHolder>? = null
+    lateinit var mAdapter: MultiGenericAdapter
 
     // Id of the load more layout
     var loadMoreLayout: Int = 0
@@ -89,10 +89,7 @@ class SmartRecyclerView : LinearLayout {
      * @return true if the list is empty, false otherwise
      */
     val isEmpty: Boolean
-        get() = if (mAdapter != null)
-            mAdapter!!.isEmpty
-        else
-            true
+        get() = mAdapter.isEmpty
 
     /**
      * Return the item's count of the RecyclerView' Adapter list
@@ -100,10 +97,7 @@ class SmartRecyclerView : LinearLayout {
      * @return the item's count of the list
      */
     val itemCount: Int
-        get() = if (mAdapter != null)
-            mAdapter!!.itemCount
-        else
-            -1
+        get() = mAdapter.itemCount
 
     /**
      * Simple Constructor
@@ -207,14 +201,14 @@ class SmartRecyclerView : LinearLayout {
      *
      * @param adapter inner RecyclerView' adapter
      */
-    fun setAdapter(adapter: MultiGenericAdapter<RecyclerView.ViewHolder>) {
+    fun setAdapter(adapter: MultiGenericAdapter) {
         mAdapter = adapter
         if (mRecyclerView != null) {
             mRecyclerView!!.adapter = mAdapter
 
             this.updateAccessoryViews()
 
-            mAdapter!!.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            mAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
                 override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
                     super.onItemRangeChanged(positionStart, itemCount)
                     updateAccessoryViews()
@@ -264,27 +258,24 @@ class SmartRecyclerView : LinearLayout {
         if (swipeLayout != null)
             swipeLayout!!.isRefreshing = false
 
-        if (mAdapter != null) {
-            if (mAdapter!!.isEmpty) {
-                if (emptyView != null)
-                    emptyView!!.visibility = View.VISIBLE
-            } else {
-                if (emptyView != null)
-                    emptyView!!.visibility = View.GONE
-                //if there is more item to load, adding a placeholder cell at the end to display the load more
-                if (shouldLoadMore) {
-                    if (!mAdapter!!.contains(placeHolderCell) && loadMoreLayout > -1) {
-                        //adding directly to the adapter list to avoid firing callbacks
-                        mAdapter!!.items!!.add(placeHolderCell)
+        if (mAdapter.isEmpty) {
+            if (emptyView != null)
+                emptyView!!.visibility = View.VISIBLE
+        } else {
+            if (emptyView != null)
+                emptyView!!.visibility = View.GONE
+            //if there is more item to load, adding a placeholder cell at the end to display the load more
+            if (shouldLoadMore) {
+                if (!mAdapter.contains(placeHolderCell) && loadMoreLayout > -1) {
+                    //adding directly to the adapter list to avoid firing callbacks
+                    mAdapter.items!!.add(placeHolderCell)
 
-                        //adding the viewHolder (this is safe to add without prior check, as the adapter is smart enought to not add it twice)
-                        if (mAdapter is MultiGenericAdapter<*>)
-                            (mAdapter as MultiGenericAdapter<*>).addViewHolderType(PlaceHolderCell::class.java, PlaceHolderViewHolder::class.java, loadMoreLayout)
-                    }
-                } else {
-                    if (mAdapter!!.contains(placeHolderCell)) {
-                        mAdapter!!.removeAt(mAdapter!!.getObjectIndex(placeHolderCell))
-                    }
+                    //adding the viewHolder (this is safe to add without prior check, as the adapter is smart enought to not add it twice)
+                    mAdapter.addViewHolderType(PlaceHolderCell::class.java, PlaceHolderViewHolder::class.java, loadMoreLayout)
+                }
+            } else {
+                if (mAdapter.contains(placeHolderCell)) {
+                    mAdapter.removeAt(mAdapter.getObjectIndex(placeHolderCell))
                 }
             }
         }
@@ -370,8 +361,7 @@ class SmartRecyclerView : LinearLayout {
      * Display the loading placeholder ontop of the list
      */
     fun displayLoadingView() {
-        //si on a un PTR de setté, on l'affiche, sinon on affiche le message de chargement
-        if (mAdapter != null && mAdapter!!.itemCount > 0) {
+        if (mAdapter.itemCount > 0) {
             if (swipeLayout != null && !swipeLayout!!.isRefreshing) {
                 // on affiche le PTR
                 val typed_value = TypedValue()
@@ -458,8 +448,8 @@ class SmartRecyclerView : LinearLayout {
      * Scroll to the bottom of the list
      */
     fun scrollToBottom() {
-        if (mRecyclerView != null && mAdapter != null && mAdapter!!.itemCount > 0)
-            mRecyclerView!!.scrollToPosition(mAdapter!!.itemCount - 1)
+        if (mRecyclerView != null && mAdapter.itemCount > 0)
+            mRecyclerView!!.scrollToPosition(mAdapter.itemCount - 1)
     }
 
 

@@ -1,7 +1,6 @@
 package com.lapptelier.test;
 
 import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
@@ -15,11 +14,11 @@ import butterknife.ButterKnife;
  * @author L'Apptelier SARL
  * @date 14/09/2017
  */
-class TestViewHolder extends RecyclerView.ViewHolder implements SmartViewHolder<String> {
+class TestViewHolder extends SmartViewHolder<String> {
     @BindView(R.id.text)
-    TextView textView;
+    protected TextView textView;
 
-    String cellText;
+    private String cellText;
 
     public TestViewHolder(View view) {
         super(view);
