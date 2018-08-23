@@ -30,7 +30,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 27
         versionCode 4
-        versionName "2.0.0-Alpha-1"
+        versionName "2.0.0-Beta-1"
     }
 
     buildTypes {
@@ -85,10 +85,10 @@ bintray {
         vcsUrl = 'https://github.com/LApptelier/SmartRecyclerView.git'
         websiteUrl = 'https://github.com/LApptelier/SmartRecyclerView.git'
         version {
-            name = '1.0.0-Alpha-2'
-            desc = 'Alpha version of the 1.0.0'
+            name = '2.0.0-Beta-1'
+            desc = 'Beta version of the 2.0.0'
             released = new Date()
-            vcsTag = '1.0.0-Alpha-1'
+            vcsTag = '2.0.0-Beta-1'
         }
     }
 }
@@ -100,10 +100,10 @@ install {
     repositories.mavenInstaller {
         pom.project {
             group = 'com.lapptelier.smartrecyclerview'
-            version = '2.0.0-Alpha-1'
+            version = '2.0.0-Beta-1'
             group "com.codepath.libraries"
             artifactId "smartrecyclerview"
-            version "2.0.0-Alpha-1"
+            version "2.0.0-Beta-1"
         }
     }
 }
