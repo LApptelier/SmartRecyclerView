@@ -9,7 +9,7 @@
 
 
         <!-- view background color -->
-        <solid android:color="@android:color/holo_red_dark" />
+        <solid android:color="@android:color/white" />
 
         <!-- If you want to add some padding -->
         <padding
