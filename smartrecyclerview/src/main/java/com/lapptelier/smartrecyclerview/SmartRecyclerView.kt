@@ -83,6 +83,9 @@ class SmartRecyclerView : LinearLayout {
     // Id of the load more layout
     var loadMoreLayout: Int = 0
 
+    // Flag for disabling the loading view while the list is empty
+    var emptyLoadingViewEnabled = true
+
     /**
      * Return true if the RecyclerView' Adapter list is empty
      *
@@ -182,7 +185,7 @@ class SmartRecyclerView : LinearLayout {
         if (emptyView != null)
             emptyView!!.visibility = View.GONE
         if (loadingView != null)
-            loadingView!!.visibility = View.VISIBLE
+            loadingView!!.visibility = if (emptyLoadingViewEnabled) View.VISIBLE else View.GONE
 
     }
 

@@ -114,13 +114,6 @@ class MultiGenericAdapter
 
 
     /**
-     * Wipe out the item list
-     */
-    fun clear() {
-        this.items!!.clear()
-    }
-
-    /**
      * Return the number of items in this adapter
      * @return the number of items in this adapter
      */
@@ -219,6 +212,15 @@ class MultiGenericAdapter
         this.deletePlaceholder()
         this.items!!.add(item)
         this.notifyItemRangeChanged(if (this.items!!.size > 1) this.items!!.size - 1 else 0, this.items!!.size)
+    }
+
+    /**
+     * Wipe out the item list
+     */
+    fun clear() {
+        val itemSize = this.itemCount
+        this.items!!.clear()
+        this.notifyItemRangeRemoved(0, itemSize)
     }
 
     /**
