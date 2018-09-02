@@ -3,6 +3,7 @@ package com.lapptelier.test
 import android.view.View
 import android.widget.TextView
 import com.lapptelier.smartrecyclerview.SmartViewHolder
+import com.lapptelier.smartrecyclerview.ViewHolderInteraction
 import com.lapptelier.smartrecyclerview.ViewHolderInteractionListener
 
 /**
@@ -18,7 +19,7 @@ internal class TestViewHolder(view: View) : SmartViewHolder<String>(view) {
         cellText = item
         textView.text = item
 
-        textView.setOnClickListener { listener.onItemClicked(item) }
+        textView.setOnClickListener { listener.onItemAction(item, textView.id, ViewHolderInteraction.TAP) }
         textView.isLongClickable = true
     }
 }

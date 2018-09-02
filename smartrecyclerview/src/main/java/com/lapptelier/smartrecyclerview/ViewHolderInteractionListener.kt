@@ -12,12 +12,12 @@ package com.lapptelier.smartrecyclerview
  */
 interface ViewHolderInteractionListener {
     /**
-     * Listener for click interaction with a viewHolder
-     */
-    fun onItemClicked(item: Any)
-
-    /**
      * Listener for all type of actions interaction with a viewHolder
+     *
+     * @param item the item corresponding to the touched cell
+     * @param viewId id of the touched view in the cell
+     * @param action action excecuted on the cell, see [ViewHolderInteraction]
      */
-    fun onItemAction(item: Any, action: Int)
+    fun onItemAction(item: Any, viewId: Int, viewHolderInteraction: ViewHolderInteraction)
 }
+

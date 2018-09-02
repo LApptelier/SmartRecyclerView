@@ -7,10 +7,7 @@ import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
-import com.lapptelier.smartrecyclerview.DrawableDividerItemDecoration
-import com.lapptelier.smartrecyclerview.MultiGenericAdapter
-import com.lapptelier.smartrecyclerview.SmartRecyclerView
-import com.lapptelier.smartrecyclerview.ViewHolderInteractionListener
+import com.lapptelier.smartrecyclerview.*
 import java.util.*
 
 /**
@@ -50,11 +47,8 @@ internal class TestActivity : AppCompatActivity(), ViewHolderInteractionListener
 
     }
 
-    override fun onItemClicked(item: Any) {
+
+    override fun onItemAction(item: Any, viewId: Int, action: ViewHolderInteraction) {
         adapter.removeAt(adapter.getObjectIndex(item))
-    }
-
-    override fun onItemAction(item: Any, action: Int) {
-
     }
 }
