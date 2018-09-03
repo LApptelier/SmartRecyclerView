@@ -389,6 +389,16 @@ class SmartRecyclerView : LinearLayout {
     }
 
     /**
+     * Scroll without animation to an item position in the RecyclerView
+     *
+     * @param position position to scroll to
+     */
+    fun scrollTo(position: Int) {
+        if (mRecyclerView != null)
+            this.mRecyclerView!!.scrollToPosition(position)
+    }
+
+    /**
      * Add a custom cell divider to the recycler view
      *
      * @param dividerItemDecoration custom cell divider
