@@ -1,5 +1,6 @@
 package com.lapptelier.smartrecyclerview
 
+import android.animation.LayoutTransition
 import android.annotation.SuppressLint
 import android.content.Context
 import android.support.v4.widget.SwipeRefreshLayout
@@ -13,6 +14,7 @@ import android.view.ViewStub
 import android.widget.LinearLayout
 import kotlinx.android.synthetic.main.layout_smart_recycler_view.view.*
 import java.util.*
+
 
 /**
  * com.lapptelier.smartrecyclerview.smart_recycler_view.SmartRecyclerView
@@ -62,6 +64,9 @@ class SmartRecyclerView : LinearLayout {
     var emptyView: View? = null
         private set
 
+    // main layout of the view
+    var mOuterLayout: LinearLayout? = null
+
     // flag used when the loadmore progress is displayed
     private var isLoadingMore: Boolean = false
 
@@ -85,6 +90,20 @@ class SmartRecyclerView : LinearLayout {
 
     // Flag for disabling the loading view while the list is empty
     var emptyLoadingViewEnabled = true
+        set(value) {
+            field = value
+
+            mEmptyViewStub?.visibility = View.GONE
+        }
+
+    /**
+     * Enable or disable the animation on new list entry
+     *
+     * @param animate true to enable layout animation, false to disable
+     */
+    fun setAnimateLayoutChange(animate: Boolean) {
+        mOuterLayout?.layoutTransition = if(animate) LayoutTransition() else null
+    }
 
     /**
      * Return true if the RecyclerView' Adapter list is empty

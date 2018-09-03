@@ -38,9 +38,11 @@ internal class TestActivity : AppCompatActivity(), ViewHolderInteractionListener
         adapter = MultiGenericAdapter(String::class.java, TestViewHolder::class.java, R.layout.cell_test, this)
         mRecyclerView!!.setAdapter(adapter)
         mRecyclerView!!.addItemDecoration(DrawableDividerItemDecoration(ContextCompat.getDrawable(baseContext, R.drawable.divider), null, true))
+        mRecyclerView!!.emptyLoadingViewEnabled = false
+        mRecyclerView!!.setAnimateLayoutChange(false)
 
         //on sette le texte de la vue vide
-        mRecyclerView!!.setLoadingLayout(R.layout.empty)
+//        mRecyclerView!!.setLoadingLayout(R.layout.empty)
 
         Handler().postDelayed({ adapter.addAll(elements) }, 500)
 
