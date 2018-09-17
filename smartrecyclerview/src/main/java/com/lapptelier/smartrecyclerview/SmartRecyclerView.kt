@@ -102,7 +102,7 @@ class SmartRecyclerView : LinearLayout {
      * @param animate true to enable layout animation, false to disable
      */
     fun setAnimateLayoutChange(animate: Boolean) {
-        mOuterLayout?.layoutTransition = if(animate) LayoutTransition() else null
+        mOuterLayout?.layoutTransition = if (animate) LayoutTransition() else null
     }
 
     /**
@@ -294,6 +294,10 @@ class SmartRecyclerView : LinearLayout {
 
                     //adding the viewHolder (this is safe to add without prior check, as the adapter is smart enought to not add it twice)
                     mAdapter.addViewHolderType(PlaceHolderCell::class.java, PlaceHolderViewHolder::class.java, loadMoreLayout)
+                } else if (mAdapter.contains(placeHolderCell) && loadMoreLayout > -1) {
+                    //removing and adding again the placeholder view to ensure it's always on the last positions
+                    mAdapter.removeAt(mAdapter.getObjectIndex(placeHolderCell))
+                    mAdapter.items!!.add(placeHolderCell)
                 }
             } else {
                 if (mAdapter.contains(placeHolderCell)) {
