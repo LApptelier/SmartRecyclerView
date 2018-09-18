@@ -146,7 +146,7 @@ class MultiGenericAdapter
     fun insertAll(items: List<Any>, position: Int) {
         this.deletePlaceholder()
         this.items!!.addAll(position, items)
-        this.notifyDataSetChanged()
+        this.notifyItemInserted(position)
     }
 
     /**
@@ -237,13 +237,13 @@ class MultiGenericAdapter
     /**
      * Return the position in the list of the given item
      *
-     * @param object item to search in the list
+     * @param item item to search in the list
      * @return item's position if found, -1 otherwise
      */
-    fun getObjectIndex(`object`: Any): Int {
+    fun getObjectIndex(item: Any): Int {
         var selectedIndex = -1
-        for (index in this.items!!.indices) {
-            if (this.items!![index] == `object`) {
+        this.items!!.indices.forEach { index ->
+            if (this.items!![index] == item) {
                 selectedIndex = index
             }
         }
@@ -253,10 +253,15 @@ class MultiGenericAdapter
     /**
      * Delete all placeholders
      */
-    private fun deletePlaceholder() {
-        val index = getObjectIndex(PlaceHolderCell::class.java)
-        if (index > 0) {
-            items!!.removeAt(index)
+    fun deletePlaceholder() {
+        val selectedIndexes = ArrayList<Int>()
+        this.items!!.indices.forEach { index ->
+            if (this.items!![index] is PlaceHolderCell) {
+                selectedIndexes.add(index)
+            }
+        }
+        selectedIndexes.forEach {
+            this.items!!.removeAt(it)
         }
     }
 

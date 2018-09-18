@@ -14,32 +14,39 @@ import java.util.*
  * @author L'Apptelier SARL
  * @date 14/09/2017
  */
-internal class TestActivity : AppCompatActivity(), ViewHolderInteractionListener {
+internal class TestActivity : AppCompatActivity(), ViewHolderInteractionListener, OnMoreListener, SwipeRefreshLayout.OnRefreshListener {
 
     private var mRecyclerView: SmartRecyclerView? = null
 
     private lateinit var adapter: MultiGenericAdapter
+
+    private val elements = Arrays.asList("test 1", "test 2", "test 3", "test 4", "test 5", "test 6", "test 7", "test 8")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_test)
         mRecyclerView = findViewById(R.id.test_smart_recycler_view)
 
-        val elements = Arrays.asList("test 1", "test 2", "test 3", "test 4", "test 5", "test 6", "test 7", "test 8")
-
         //configuration de la liste
         mRecyclerView!!.setLayoutManager(LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false))
         mRecyclerView!!.setRefreshListener(SwipeRefreshLayout.OnRefreshListener {
             Log.d("test", "FRESH-FRESH-FRESH !")
-            mRecyclerView!!.displaySwipeToRefresh(false)
+            mRecyclerView!!.enableSwipeToRefresh(false)
         })
 
         // Configuration de l'adapter
         adapter = MultiGenericAdapter(String::class.java, TestViewHolder::class.java, R.layout.cell_test, this)
         mRecyclerView!!.setAdapter(adapter)
         mRecyclerView!!.addItemDecoration(DrawableDividerItemDecoration(ContextCompat.getDrawable(baseContext, R.drawable.divider), null, true))
-        mRecyclerView!!.emptyLoadingViewEnabled = false
-        mRecyclerView!!.setAnimateLayoutChange(false)
+        mRecyclerView!!.enableEmptyView(true)
+        mRecyclerView!!.enableLoadMore(true)
+        mRecyclerView!!.enableSwipeToRefresh(true)
+        mRecyclerView!!.setAnimateLayoutChange(true)
+        mRecyclerView!!.emptyLayout = R.layout.empty
+        mRecyclerView!!.loadingLayout = R.layout.loading
+        mRecyclerView!!.loadMoreLayout = R.layout.loading
+        mRecyclerView!!.setOnMoreListener(this, 5)
+        mRecyclerView!!.setRefreshListener(this)
 
         //on sette le texte de la vue vide
 //        mRecyclerView!!.setLoadingLayout(R.layout.empty)
@@ -47,6 +54,17 @@ internal class TestActivity : AppCompatActivity(), ViewHolderInteractionListener
         Handler().postDelayed({ adapter.addAll(elements) }, 500)
 
 
+    }
+
+
+    // OnMoreListener
+    override fun onMoreAsked(overallItemsCount: Int, itemsBeforeMore: Int, maxLastVisiblePosition: Int) {
+        adapter.addAll(elements)
+    }
+
+    override fun onRefresh() {
+        adapter.clear()
+        adapter.addAll(elements)
     }
 
 

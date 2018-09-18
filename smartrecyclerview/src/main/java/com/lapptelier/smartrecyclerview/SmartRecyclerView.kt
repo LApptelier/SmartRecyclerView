@@ -47,7 +47,7 @@ class SmartRecyclerView : LinearLayout {
     var mEmptyViewStub: ViewStub? = null
 
     // placeholder cell used to display load more progress
-    val placeHolderCell = PlaceHolderCell()
+    private val placeHolderCell = PlaceHolderCell()
 
     /**
      * Return the inflated view layout placed when the list is loading elements
@@ -65,7 +65,7 @@ class SmartRecyclerView : LinearLayout {
         private set
 
     // main layout of the view
-    var mOuterLayout: LinearLayout? = null
+    private var mOuterLayout: LinearLayout? = null
 
     // flag used when the loadmore progress is displayed
     private var isLoadingMore: Boolean = false
@@ -74,27 +74,36 @@ class SmartRecyclerView : LinearLayout {
     private var shouldLoadMore: Boolean = false
 
     // recycler view listener
-    lateinit var mInternalOnScrollListener: RecyclerView.OnScrollListener
+    private lateinit var mInternalOnScrollListener: RecyclerView.OnScrollListener
 
     // List of all external scroll listerners
-    var mExternalOnScrollListeners: MutableList<RecyclerView.OnScrollListener> = ArrayList()
+    private var mExternalOnScrollListeners: MutableList<RecyclerView.OnScrollListener> = ArrayList()
 
     // On More Listener
-    var mOnMoreListener: OnMoreListener? = null
-
-    // Generic adapter
-    lateinit var mAdapter: MultiGenericAdapter
-
-    // Id of the load more layout
-    var loadMoreLayout: Int = 0
+    private var mOnMoreListener: OnMoreListener? = null
 
     // Flag for disabling the loading view while the list is empty
-    var emptyLoadingViewEnabled = true
-        set(value) {
-            field = value
+    private var emptyLoadingViewEnabled = true
 
-            mEmptyViewStub?.visibility = View.GONE
+    // Generic adapter
+    private lateinit var mAdapter: MultiGenericAdapter
+
+    // Layouts
+    var loadMoreLayout: Int = 0
+    var loadingLayout: Int = 0
+        set(layout) {
+            field = layout
+            mLoadingViewStub!!.layoutResource = layout
+            loadingView = mLoadingViewStub!!.inflate()
         }
+    var emptyLayout: Int = 0
+        set(layout) {
+            field = layout
+            mEmptyViewStub!!.layoutResource = layout
+            emptyView = mEmptyViewStub!!.inflate()
+
+        }
+
 
     /**
      * Enable or disable the animation on new list entry
@@ -104,22 +113,6 @@ class SmartRecyclerView : LinearLayout {
     fun setAnimateLayoutChange(animate: Boolean) {
         mOuterLayout?.layoutTransition = if (animate) LayoutTransition() else null
     }
-
-    /**
-     * Return true if the RecyclerView' Adapter list is empty
-     *
-     * @return true if the list is empty, false otherwise
-     */
-    val isEmpty: Boolean
-        get() = mAdapter.isEmpty
-
-    /**
-     * Return the item's count of the RecyclerView' Adapter list
-     *
-     * @return the item's count of the list
-     */
-    val itemCount: Int
-        get() = mAdapter.itemCount
 
     /**
      * Simple Constructor
@@ -288,21 +281,15 @@ class SmartRecyclerView : LinearLayout {
                 emptyView!!.visibility = View.GONE
             //if there is more item to load, adding a placeholder cell at the end to display the load more
             if (shouldLoadMore) {
-                if (!mAdapter.contains(placeHolderCell) && loadMoreLayout > -1) {
-                    //adding directly to the adapter list to avoid firing callbacks
-                    mAdapter.items!!.add(placeHolderCell)
-
-                    //adding the viewHolder (this is safe to add without prior check, as the adapter is smart enought to not add it twice)
+                //adding the viewHolder (this is safe to add without prior check, as the adapter is smart enought to not add it twice)
+                if (loadMoreLayout > -1) {
                     mAdapter.addViewHolderType(PlaceHolderCell::class.java, PlaceHolderViewHolder::class.java, loadMoreLayout)
-                } else if (mAdapter.contains(placeHolderCell) && loadMoreLayout > -1) {
-                    //removing and adding again the placeholder view to ensure it's always on the last positions
-                    mAdapter.removeAt(mAdapter.getObjectIndex(placeHolderCell))
-                    mAdapter.items!!.add(placeHolderCell)
                 }
+                //removing and adding again the placeholder view to ensure it's always on the last positions
+                mAdapter.deletePlaceholder()
+                mAdapter.items!!.add(placeHolderCell)
             } else {
-                if (mAdapter.contains(placeHolderCell)) {
-                    mAdapter.removeAt(mAdapter.getObjectIndex(placeHolderCell))
-                }
+                mAdapter.deletePlaceholder()
             }
         }
     }
@@ -320,12 +307,12 @@ class SmartRecyclerView : LinearLayout {
     }
 
     /**
-     * set the LoadMore Listener
+     * set the OnMore Listener
      *
      * @param onMoreListener the LoadMore Listener
      * @param max            count of items left before firing the LoadMore
      */
-    fun setupMoreListener(onMoreListener: OnMoreListener, max: Int) {
+    fun setOnMoreListener(onMoreListener: OnMoreListener, max: Int) {
         mOnMoreListener = onMoreListener
         itemLeftMoreToLoad = max
         shouldLoadMore = true
@@ -347,7 +334,7 @@ class SmartRecyclerView : LinearLayout {
      *
      * @param display true to display the pull-to-refresh, false otherwise
      */
-    fun displaySwipeToRefresh(display: Boolean) {
+    fun enableSwipeToRefresh(display: Boolean) {
         if (swipeLayout != null)
             swipeLayout!!.isEnabled = display
     }
@@ -358,29 +345,19 @@ class SmartRecyclerView : LinearLayout {
      *
      * @param shouldLoadMore true to enable the LoadMore process, false otherwise
      */
-    fun shouldLoadMore(shouldLoadMore: Boolean) {
+    fun enableLoadMore(shouldLoadMore: Boolean) {
         this.shouldLoadMore = shouldLoadMore
         updateAccessoryViews()
     }
 
     /**
-     * Set the view displayed when no items are in the list. Should have a frame layout at its root.
+     * Tell the recyclerView if the empty view should be displayed when there is no items.
      *
-     * @param viewLayout the view layout to inflate
+     * @param enableEmpty true to display the empty view, false otherwise
      */
-    fun setEmptyLayout(viewLayout: Int) {
-        mEmptyViewStub!!.layoutResource = viewLayout
-        emptyView = mEmptyViewStub!!.inflate()
-    }
-
-    /**
-     * Set the view displayed during loadings. Should have a frame layout at its root.
-     *
-     * @param viewLayout the view layout to inflate
-     */
-    fun setLoadingLayout(viewLayout: Int) {
-        mLoadingViewStub!!.layoutResource = viewLayout
-        loadingView = mLoadingViewStub!!.inflate()
+    fun enableEmptyView(enableEmpty: Boolean) {
+        emptyLoadingViewEnabled = enableEmpty
+        mEmptyViewStub?.visibility = View.GONE
     }
 
     /**
