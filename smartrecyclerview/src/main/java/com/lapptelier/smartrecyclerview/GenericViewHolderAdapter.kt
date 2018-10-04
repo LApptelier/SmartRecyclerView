@@ -1,6 +1,6 @@
 package com.lapptelier.smartrecyclerview
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 
 /**
  * com.lapptelier.smartrecyclerview.GenericViewHolderAdapter
@@ -22,14 +22,14 @@ internal interface GenericViewHolderAdapter {
      * @param viewHolderClass   associated view holde class for the given class
      * @param fragment_resource ressources_id of the layout for the given ViewHolder class
      */
-    fun addViewHolderType(itemClass: Class<*>, viewHolderClass: Class<out RecyclerView.ViewHolder>, fragment_resource: Int)
+    fun addViewHolderType(itemClass: Class<*>, viewHolderClass: Class<out androidx.recyclerview.widget.RecyclerView.ViewHolder>, fragment_resource: Int)
 
     /**
      * Remove a ViewHolder class
      *
      * @param viewHolderClass ViewHolder class to remove
      */
-    fun removeViewHolderType(viewHolderClass: Class<out RecyclerView.ViewHolder>)
+    fun removeViewHolderType(viewHolderClass: Class<out androidx.recyclerview.widget.RecyclerView.ViewHolder>)
 
 
 }

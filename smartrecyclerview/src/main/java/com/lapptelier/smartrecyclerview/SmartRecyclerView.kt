@@ -3,14 +3,12 @@ package com.lapptelier.smartrecyclerview
 import android.animation.LayoutTransition
 import android.annotation.SuppressLint
 import android.content.Context
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewStub
+import android.view.animation.LinearInterpolator
 import android.widget.LinearLayout
 import kotlinx.android.synthetic.main.layout_smart_recycler_view.view.*
 import java.util.*
@@ -37,10 +35,10 @@ class SmartRecyclerView : LinearLayout {
     private var itemLeftMoreToLoad = 10
 
     // actual recycler view
-    private var mRecyclerView: RecyclerView? = null
+    private var mRecyclerView: androidx.recyclerview.widget.RecyclerView? = null
 
     // swipe layout
-    var swipeLayout: SwipeRefreshLayout? = null
+    var swipeLayout: androidx.swiperefreshlayout.widget.SwipeRefreshLayout? = null
 
     // placeholder on the loading of the list
     var mLoadingViewStub: ViewStub? = null
@@ -74,10 +72,10 @@ class SmartRecyclerView : LinearLayout {
     private var shouldLoadMore: Boolean = false
 
     // recycler view listener
-    private lateinit var mInternalOnScrollListener: RecyclerView.OnScrollListener
+    private lateinit var mInternalOnScrollListener: androidx.recyclerview.widget.RecyclerView.OnScrollListener
 
     // List of all external scroll listerners
-    private var mExternalOnScrollListeners: MutableList<RecyclerView.OnScrollListener> = ArrayList()
+    private var mExternalOnScrollListeners: MutableList<androidx.recyclerview.widget.RecyclerView.OnScrollListener> = ArrayList()
 
     // On More Listener
     private var mOnMoreListener: OnMoreListener? = null
@@ -161,19 +159,20 @@ class SmartRecyclerView : LinearLayout {
         swipeLayout = view.smart_list_swipe_layout
 
         if (mRecyclerView != null) {
-            mInternalOnScrollListener = object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            mInternalOnScrollListener = object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: androidx.recyclerview.widget.RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
 
-                    if (recyclerView.layoutManager is LinearLayoutManager) {
-                        val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                    if (recyclerView.layoutManager is androidx.recyclerview.widget.LinearLayoutManager) {
+                        val layoutManager = recyclerView.layoutManager as androidx.recyclerview.widget.LinearLayoutManager
 
                         if (layoutManager.findLastVisibleItemPosition() >= layoutManager.itemCount - itemLeftMoreToLoad
                                 && !isLoadingMore && shouldLoadMore) {
 
                             isLoadingMore = true
                             if (mOnMoreListener != null) {
-                                mOnMoreListener!!.onMoreAsked(mRecyclerView!!.adapter.itemCount, itemLeftMoreToLoad, layoutManager.findLastVisibleItemPosition())
+                                mOnMoreListener!!.onMoreAsked(mRecyclerView!!.adapter?.itemCount
+                                        ?: 0, itemLeftMoreToLoad, layoutManager.findLastVisibleItemPosition())
                             }
                         }
                     }
@@ -183,7 +182,7 @@ class SmartRecyclerView : LinearLayout {
 
                 }
 
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                override fun onScrollStateChanged(recyclerView: androidx.recyclerview.widget.RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
                     for (listener in mExternalOnScrollListeners)
                         listener.onScrollStateChanged(recyclerView, newState)
@@ -206,7 +205,7 @@ class SmartRecyclerView : LinearLayout {
      *
      * @param layoutManager inner RecyclerView' LayoutManager
      */
-    fun setLayoutManager(layoutManager: RecyclerView.LayoutManager) {
+    fun setLayoutManager(layoutManager: androidx.recyclerview.widget.RecyclerView.LayoutManager) {
         if (mRecyclerView != null)
             mRecyclerView!!.layoutManager = layoutManager
     }
@@ -223,7 +222,7 @@ class SmartRecyclerView : LinearLayout {
 
             this.updateAccessoryViews()
 
-            mAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            mAdapter.registerAdapterDataObserver(object : androidx.recyclerview.widget.RecyclerView.AdapterDataObserver() {
                 override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
                     super.onItemRangeChanged(positionStart, itemCount)
                     updateAccessoryViews()
@@ -403,7 +402,7 @@ class SmartRecyclerView : LinearLayout {
      *
      * @param dividerItemDecoration custom cell divider
      */
-    fun addItemDecoration(dividerItemDecoration: RecyclerView.ItemDecoration) {
+    fun addItemDecoration(dividerItemDecoration: androidx.recyclerview.widget.RecyclerView.ItemDecoration) {
         if (mRecyclerView != null)
             mRecyclerView!!.addItemDecoration(dividerItemDecoration)
     }
@@ -437,7 +436,7 @@ class SmartRecyclerView : LinearLayout {
     /**
      * @return the scroll listeners of the recyclerView
      */
-    fun getExternalOnScrollListeners(): List<RecyclerView.OnScrollListener> {
+    fun getExternalOnScrollListeners(): List<androidx.recyclerview.widget.RecyclerView.OnScrollListener> {
         return mExternalOnScrollListeners
     }
 
@@ -446,7 +445,7 @@ class SmartRecyclerView : LinearLayout {
      *
      * @param externalOnScrollListener
      */
-    fun addExternalOnScrollListener(externalOnScrollListener: RecyclerView.OnScrollListener) {
+    fun addExternalOnScrollListener(externalOnScrollListener: androidx.recyclerview.widget.RecyclerView.OnScrollListener) {
         this.mExternalOnScrollListeners.add(externalOnScrollListener)
     }
 

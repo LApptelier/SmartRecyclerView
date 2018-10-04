@@ -20,7 +20,7 @@ import android.graphics.Canvas
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.os.Build
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 
 /**
@@ -34,11 +34,11 @@ class DrawableDividerItemDecoration
  * @param verticalDrawable   vertical divider drawable
  * @param overlap           whether the divider is drawn overlapped on bottom (or right) of the item.
  */
-(private val horizontalDrawable: Drawable?, private val verticalDrawable: Drawable?, private val overlap: Boolean) : RecyclerView.ItemDecoration() {
+(private val horizontalDrawable: Drawable?, private val verticalDrawable: Drawable?, private val overlap: Boolean) : androidx.recyclerview.widget.RecyclerView.ItemDecoration() {
     private val mHorizontalDividerHeight: Int = horizontalDrawable?.intrinsicHeight ?: 0
     private val mVerticalDividerWidth: Int = verticalDrawable?.intrinsicWidth ?: 0
 
-    override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+    override fun onDrawOver(c: Canvas, parent: androidx.recyclerview.widget.RecyclerView, state: androidx.recyclerview.widget.RecyclerView.State) {
         val childCount = parent.childCount
 
 
@@ -108,7 +108,7 @@ class DrawableDividerItemDecoration
         }
     }
 
-    override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+    override fun getItemOffsets(outRect: Rect, view: View, parent: androidx.recyclerview.widget.RecyclerView, state: androidx.recyclerview.widget.RecyclerView.State) {
         if (overlap) {
             outRect.set(0, 0, 0, 0)
         } else {

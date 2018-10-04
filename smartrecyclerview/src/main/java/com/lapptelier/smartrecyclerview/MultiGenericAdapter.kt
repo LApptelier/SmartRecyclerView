@@ -1,7 +1,7 @@
 package com.lapptelier.smartrecyclerview
 
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.RecyclerView.ViewHolder
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -31,7 +31,7 @@ class MultiGenericAdapter
  * @param viewHolderClass   associated view holde class for the given class
  * @param fragment_resource ressources_id of the layout for the given ViewHolder class
  */
-(itemClass: Class<*>, viewHolderClass: Class<out ViewHolder>, fragment_resource: Int, listener: ViewHolderInteractionListener) : GenericViewHolderAdapter, RecyclerView.Adapter<ViewHolder>() {
+(itemClass: Class<*>, viewHolderClass: Class<out ViewHolder>, fragment_resource: Int, listener: ViewHolderInteractionListener) : GenericViewHolderAdapter, androidx.recyclerview.widget.RecyclerView.Adapter<ViewHolder>() {
 
     private val fragmentResources: MutableMap<Class<out ViewHolder>, Int> // List of all ViewHolders' layout ressource_id
     private val viewHolderForClass: MutableMap<Class<*>, Class<out ViewHolder>> // Map of all corresponding ViewHolders classes for a given item class

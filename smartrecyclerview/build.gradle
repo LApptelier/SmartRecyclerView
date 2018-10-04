@@ -4,7 +4,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.4'
+        classpath 'com.android.tools.build:gradle:3.2.0'
         // used to generate a POM file
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
     }
@@ -23,14 +23,14 @@ apply plugin: 'com.jfrog.bintray'
 group = 'com.github.LApptelier'
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion "26.0.2"
+    compileSdkVersion 28
+    buildToolsVersion '28.0.3'
 
     defaultConfig {
         minSdkVersion 19
-        targetSdkVersion 27
-        versionCode 5
-        versionName "2.1.0"
+        targetSdkVersion 28
+        versionCode 6
+        versionName "2.2.0"
     }
 
     buildTypes {
@@ -54,21 +54,17 @@ allprojects {
 
 
 ext {
-    supportLibraryVersion = '27.1.1'
+    supportLibraryVersion = '28.0.0'
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    compile "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.19.3"
-    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    compile "com.android.support:recyclerview-v7:$supportLibraryVersion"
-    compile "com.android.support:appcompat-v7:$supportLibraryVersion"
-    compile "com.android.support:support-v4:$supportLibraryVersion"
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:0.23.3'
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 }
 
 bintray {
@@ -85,10 +81,10 @@ bintray {
         vcsUrl = 'https://github.com/LApptelier/SmartRecyclerView.git'
         websiteUrl = 'https://github.com/LApptelier/SmartRecyclerView.git'
         version {
-            name = '2.0.0-Beta-1'
-            desc = 'Beta version of the 2.0.0'
+            name = '2.2.0'
+            desc = '2.2.0'
             released = new Date()
-            vcsTag = '2.0.0-Beta-1'
+            vcsTag = '2.2.0'
         }
     }
 }
@@ -100,10 +96,10 @@ install {
     repositories.mavenInstaller {
         pom.project {
             group = 'com.lapptelier.smartrecyclerview'
-            version = '2.0.0-Beta-1'
+            version = '2.2.0'
             group "com.codepath.libraries"
             artifactId "smartrecyclerview"
-            version "2.0.0-Beta-1"
+            version "2.2.0"
         }
     }
 }

@@ -10,5 +10,6 @@
         android:layout_gravity="center"
         android:layout_margin="20dp"
         android:indeterminate="true"
+        android:progressTint="@android:color/white"
         android:gravity="center" />
 </FrameLayout>
