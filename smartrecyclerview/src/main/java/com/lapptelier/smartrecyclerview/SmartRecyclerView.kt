@@ -365,12 +365,12 @@ class SmartRecyclerView : LinearLayout {
                 // on affiche le PTR
                 val typed_value = TypedValue()
                 context.theme.resolveAttribute(android.support.v7.appcompat.R.attr.actionBarSize, typed_value, true)
-                swipeLayout!!.setProgressViewOffset(false, 0, resources.getDimensionPixelSize(typed_value.resourceId))
-                swipeLayout!!.isRefreshing = true
+                swipeLayout?.setProgressViewOffset(false, 0, resources.getDimensionPixelSize(typed_value.resourceId))
+                swipeLayout?.isRefreshing = true
             }
         } else {
-            if (loadingView != null)
-                this.loadingView!!.visibility = View.VISIBLE
+            this.emptyView?.visibility = View.GONE
+            this.loadingView?.visibility = View.VISIBLE
         }
     }
 
