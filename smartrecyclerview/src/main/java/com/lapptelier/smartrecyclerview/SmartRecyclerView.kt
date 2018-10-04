@@ -261,10 +261,6 @@ class SmartRecyclerView : LinearLayout {
      * Update the view to display loading if needed
      */
     private fun updateAccessoryViews() {
-        // hiddig the loading view first
-        if (loadingView != null)
-            loadingView!!.visibility = View.GONE
-
         //flag indicating that the data loading is complete
         isLoadingMore = false
 
@@ -274,10 +270,12 @@ class SmartRecyclerView : LinearLayout {
 
         if (mAdapter.isEmpty) {
             if (emptyView != null)
-                emptyView!!.visibility = View.VISIBLE
+                emptyView!!.animate().setDuration(resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()).setInterpolator(LinearInterpolator()).alpha(1f).setUpdateListener {
+                }
         } else {
             if (emptyView != null)
-                emptyView!!.visibility = View.GONE
+                emptyView!!.animate().setDuration(resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()).setInterpolator(LinearInterpolator()).alpha(0f).setUpdateListener {
+                }
             //if there is more item to load, adding a placeholder cell at the end to display the load more
             if (shouldLoadMore) {
                 //adding the viewHolder (this is safe to add without prior check, as the adapter is smart enought to not add it twice)
@@ -291,6 +289,10 @@ class SmartRecyclerView : LinearLayout {
                 mAdapter.deletePlaceholder()
             }
         }
+        // hiddig the loading view last
+        if (loadingView != null)
+            loadingView!!.animate().setUpdateListener { if(it.isStarted && !it.isRunning) loadingView!!.visibility = View.GONE }.setDuration(resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()).setInterpolator(LinearInterpolator()).alpha(0f)
+
     }
 
     /**
@@ -298,7 +300,7 @@ class SmartRecyclerView : LinearLayout {
      *
      * @param listener the RecyclerView' SwipeRefreshListener
      */
-    fun setRefreshListener(listener: SwipeRefreshLayout.OnRefreshListener) {
+    fun setRefreshListener(listener: androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener) {
         if (swipeLayout != null) {
             swipeLayout!!.isEnabled = true
             swipeLayout!!.setOnRefreshListener(listener)
@@ -367,13 +369,13 @@ class SmartRecyclerView : LinearLayout {
             if (swipeLayout != null && !swipeLayout!!.isRefreshing) {
                 // on affiche le PTR
                 val typed_value = TypedValue()
-                context.theme.resolveAttribute(android.support.v7.appcompat.R.attr.actionBarSize, typed_value, true)
+                context.theme.resolveAttribute(androidx.appcompat.R.attr.actionBarSize, typed_value, true)
                 swipeLayout!!.setProgressViewOffset(false, 0, resources.getDimensionPixelSize(typed_value.resourceId))
                 swipeLayout!!.isRefreshing = true
             }
         } else {
             if (loadingView != null)
-                this.loadingView!!.visibility = View.VISIBLE
+                loadingView!!.animate().setUpdateListener { if(it.isStarted && it.isRunning) loadingView!!.visibility = View.VISIBLE }.setDuration(resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()).setInterpolator(LinearInterpolator()).alpha(1f)
         }
     }
 
