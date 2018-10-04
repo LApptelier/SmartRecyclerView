@@ -12,7 +12,7 @@ import android.view.View
  * @author L'Apptelier SARL
  * @date 14/09/2017
  */
-abstract class SmartViewHolder<T>(itemView: View?) : RecyclerView.ViewHolder(itemView) {
+abstract class SmartViewHolder<T>(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
 
     abstract fun setItem(item: T, listener: ViewHolderInteractionListener)
 }

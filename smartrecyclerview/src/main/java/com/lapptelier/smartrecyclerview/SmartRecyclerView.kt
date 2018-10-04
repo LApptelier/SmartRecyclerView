@@ -173,7 +173,7 @@ class SmartRecyclerView : LinearLayout {
 
                             isLoadingMore = true
                             if (mOnMoreListener != null) {
-                                mOnMoreListener!!.onMoreAsked(mRecyclerView!!.adapter.itemCount, itemLeftMoreToLoad, layoutManager.findLastVisibleItemPosition())
+                                mOnMoreListener!!.onMoreAsked(mRecyclerView!!.adapter!!.itemCount, itemLeftMoreToLoad, layoutManager.findLastVisibleItemPosition())
                             }
                         }
                     }
@@ -263,22 +263,18 @@ class SmartRecyclerView : LinearLayout {
      */
     private fun updateAccessoryViews() {
         // hiddig the loading view first
-        if (loadingView != null)
-            loadingView!!.visibility = View.GONE
+        loadingView?.visibility = View.GONE
 
         //flag indicating that the data loading is complete
         isLoadingMore = false
 
         //hidding swipe to refresh too
-        if (swipeLayout != null)
-            swipeLayout!!.isRefreshing = false
+        swipeLayout?.isRefreshing = false
 
         if (mAdapter.isEmpty) {
-            if (emptyView != null)
-                emptyView!!.visibility = View.VISIBLE
+            emptyView?.visibility = View.VISIBLE
         } else {
-            if (emptyView != null)
-                emptyView!!.visibility = View.GONE
+            emptyView?.visibility = View.GONE
             //if there is more item to load, adding a placeholder cell at the end to display the load more
             if (shouldLoadMore) {
                 //adding the viewHolder (this is safe to add without prior check, as the adapter is smart enought to not add it twice)
@@ -355,9 +351,9 @@ class SmartRecyclerView : LinearLayout {
      *
      * @param enableEmpty true to display the empty view, false otherwise
      */
-    fun enableEmptyView(enableEmpty: Boolean) {
+    fun enableEmptyLoadingView(enableEmpty: Boolean) {
         emptyLoadingViewEnabled = enableEmpty
-        mEmptyViewStub?.visibility = View.GONE
+        loadingView?.visibility = View.GONE
     }
 
     /**
@@ -378,25 +374,6 @@ class SmartRecyclerView : LinearLayout {
         }
     }
 
-    /**
-     * Scroll smoothly to an item position in the RecyclerView
-     *
-     * @param position position to scroll to
-     */
-    fun smoothScrollTo(position: Int) {
-        if (mRecyclerView != null)
-            this.mRecyclerView!!.smoothScrollToPosition(position)
-    }
-
-    /**
-     * Scroll without animation to an item position in the RecyclerView
-     *
-     * @param position position to scroll to
-     */
-    fun scrollTo(position: Int) {
-        if (mRecyclerView != null)
-            this.mRecyclerView!!.scrollToPosition(position)
-    }
 
     /**
      * Add a custom cell divider to the recycler view
@@ -465,5 +442,32 @@ class SmartRecyclerView : LinearLayout {
             mRecyclerView!!.scrollToPosition(mAdapter.itemCount - 1)
     }
 
+    /**
+     * Scroll smoothly to the bottom of the list
+     */
+    fun smoothScrollToBottom() {
+        if (mRecyclerView != null && mAdapter.itemCount > 0)
+            mRecyclerView!!.smoothScrollToPosition(mAdapter.itemCount - 1)
+    }
+
+    /**
+     * Scroll without animation to an item position in the RecyclerView
+     *
+     * @param position position to scroll to
+     */
+    fun scrollTo(position: Int) {
+        if (mRecyclerView != null)
+            this.mRecyclerView!!.scrollToPosition(position)
+    }
+
+    /**
+     * Scroll smoothly to an item position in the RecyclerView
+     *
+     * @param position position to scroll to
+     */
+    fun smoothScrollTo(position: Int) {
+        if (mRecyclerView != null)
+            this.mRecyclerView!!.smoothScrollToPosition(position)
+    }
 
 }

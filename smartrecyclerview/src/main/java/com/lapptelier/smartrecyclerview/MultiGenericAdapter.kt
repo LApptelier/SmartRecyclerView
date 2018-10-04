@@ -218,9 +218,7 @@ class MultiGenericAdapter
      * Wipe out the item list
      */
     fun clear() {
-        val itemSize = this.itemCount
         this.items!!.clear()
-        this.notifyItemRangeRemoved(0, itemSize)
     }
 
     /**

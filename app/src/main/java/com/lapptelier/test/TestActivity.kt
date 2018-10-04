@@ -20,7 +20,7 @@ internal class TestActivity : AppCompatActivity(), ViewHolderInteractionListener
 
     private lateinit var adapter: MultiGenericAdapter
 
-    private val elements = Arrays.asList("test 1", "test 2", "test 3", "test 4", "test 5", "test 6", "test 7", "test 8")
+    private val elements = Arrays.asList("test 1", "test 2", "test 3", "test 4", "test 5", "test 6", "test 7", "test 8","test 9", "test 10", "test 11", "test 12", "test 13", "test 14", "test 15", "test 16")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,20 +38,19 @@ internal class TestActivity : AppCompatActivity(), ViewHolderInteractionListener
         adapter = MultiGenericAdapter(String::class.java, TestViewHolder::class.java, R.layout.cell_test, this)
         mRecyclerView!!.setAdapter(adapter)
         mRecyclerView!!.addItemDecoration(DrawableDividerItemDecoration(ContextCompat.getDrawable(baseContext, R.drawable.divider), null, true))
-        mRecyclerView!!.enableEmptyView(true)
+        mRecyclerView!!.enableEmptyLoadingView(true)
         mRecyclerView!!.enableLoadMore(true)
         mRecyclerView!!.enableSwipeToRefresh(true)
         mRecyclerView!!.setAnimateLayoutChange(true)
         mRecyclerView!!.emptyLayout = R.layout.empty
         mRecyclerView!!.loadingLayout = R.layout.loading
         mRecyclerView!!.loadMoreLayout = R.layout.loading
-        mRecyclerView!!.setOnMoreListener(this, 5)
+        mRecyclerView!!.setOnMoreListener(this, 2)
         mRecyclerView!!.setRefreshListener(this)
 
-        //on sette le texte de la vue vide
-//        mRecyclerView!!.setLoadingLayout(R.layout.empty)
+        mRecyclerView!!.displayLoadingView()
 
-        Handler().postDelayed({ adapter.addAll(elements) }, 500)
+        Handler().postDelayed({ adapter.addAll(elements) }, 2000)
 
 
     }
