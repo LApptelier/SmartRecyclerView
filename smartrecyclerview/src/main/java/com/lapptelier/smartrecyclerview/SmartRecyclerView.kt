@@ -37,7 +37,7 @@ class SmartRecyclerView : LinearLayout {
     private var itemLeftMoreToLoad = 10
 
     // actual recycler view
-    private var mRecyclerView: RecyclerView? = null
+    var recyclerView: RecyclerView? = null
 
     // swipe layout
     var swipeLayout: SwipeRefreshLayout? = null
@@ -155,12 +155,12 @@ class SmartRecyclerView : LinearLayout {
         val inflater = LayoutInflater.from(context)
 
         val view = inflater.inflate(R.layout.layout_smart_recycler_view, this)
-        mRecyclerView = view.smart_list_recycler
+        recyclerView = view.smart_list_recycler
         mEmptyViewStub = view.smart_list_empty_stub
         mLoadingViewStub = view.smart_list_loading_stub
         swipeLayout = view.smart_list_swipe_layout
 
-        if (mRecyclerView != null) {
+        if (recyclerView != null) {
             mInternalOnScrollListener = object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
@@ -173,7 +173,7 @@ class SmartRecyclerView : LinearLayout {
 
                             isLoadingMore = true
                             if (mOnMoreListener != null) {
-                                mOnMoreListener!!.onMoreAsked(mRecyclerView!!.adapter!!.itemCount, itemLeftMoreToLoad, layoutManager.findLastVisibleItemPosition())
+                                mOnMoreListener!!.onMoreAsked(this@SmartRecyclerView.recyclerView!!.adapter!!.itemCount, itemLeftMoreToLoad, layoutManager.findLastVisibleItemPosition())
                             }
                         }
                     }
@@ -189,7 +189,7 @@ class SmartRecyclerView : LinearLayout {
                         listener.onScrollStateChanged(recyclerView, newState)
                 }
             }
-            mRecyclerView!!.addOnScrollListener(mInternalOnScrollListener)
+            recyclerView!!.addOnScrollListener(mInternalOnScrollListener)
 
         }
 
@@ -207,8 +207,8 @@ class SmartRecyclerView : LinearLayout {
      * @param layoutManager inner RecyclerView' LayoutManager
      */
     fun setLayoutManager(layoutManager: RecyclerView.LayoutManager) {
-        if (mRecyclerView != null)
-            mRecyclerView!!.layoutManager = layoutManager
+        if (recyclerView != null)
+            recyclerView!!.layoutManager = layoutManager
     }
 
     /**
@@ -218,8 +218,8 @@ class SmartRecyclerView : LinearLayout {
      */
     fun setAdapter(adapter: MultiGenericAdapter) {
         mAdapter = adapter
-        if (mRecyclerView != null) {
-            mRecyclerView!!.adapter = mAdapter
+        if (recyclerView != null) {
+            recyclerView!!.adapter = mAdapter
 
             this.updateAccessoryViews()
 
@@ -321,8 +321,8 @@ class SmartRecyclerView : LinearLayout {
      */
     @SuppressLint("ClickableViewAccessibility")
     override fun setOnTouchListener(listener: View.OnTouchListener) {
-        if (mRecyclerView != null)
-            mRecyclerView!!.setOnTouchListener(listener)
+        if (recyclerView != null)
+            recyclerView!!.setOnTouchListener(listener)
     }
 
     /**
@@ -381,8 +381,8 @@ class SmartRecyclerView : LinearLayout {
      * @param dividerItemDecoration custom cell divider
      */
     fun addItemDecoration(dividerItemDecoration: RecyclerView.ItemDecoration) {
-        if (mRecyclerView != null)
-            mRecyclerView!!.addItemDecoration(dividerItemDecoration)
+        if (recyclerView != null)
+            recyclerView!!.addItemDecoration(dividerItemDecoration)
     }
 
     /**
@@ -391,24 +391,24 @@ class SmartRecyclerView : LinearLayout {
      * @param color view background color
      */
     override fun setBackgroundColor(color: Int) {
-        if (mRecyclerView != null)
-            mRecyclerView!!.setBackgroundColor(color)
+        if (recyclerView != null)
+            recyclerView!!.setBackgroundColor(color)
     }
 
     /**
      * Scroll the recycler view to its top
      */
     fun scrollToTop() {
-        if (!mRecyclerView!!.isAnimating && !mRecyclerView!!.isComputingLayout)
-            mRecyclerView!!.scrollToPosition(0)
+        if (!recyclerView!!.isAnimating && !recyclerView!!.isComputingLayout)
+            recyclerView!!.scrollToPosition(0)
     }
 
     /**
      * Smooth scroll the recycler view to its top
      */
     fun smoothScrollToTop() {
-        if (!mRecyclerView!!.isAnimating && !mRecyclerView!!.isComputingLayout)
-            mRecyclerView!!.smoothScrollToPosition(0)
+        if (!recyclerView!!.isAnimating && !recyclerView!!.isComputingLayout)
+            recyclerView!!.smoothScrollToPosition(0)
     }
 
     /**
@@ -438,16 +438,16 @@ class SmartRecyclerView : LinearLayout {
      * Scroll to the bottom of the list
      */
     fun scrollToBottom() {
-        if (mRecyclerView != null && mAdapter.itemCount > 0)
-            mRecyclerView!!.scrollToPosition(mAdapter.itemCount - 1)
+        if (recyclerView != null && mAdapter.itemCount > 0)
+            recyclerView!!.scrollToPosition(mAdapter.itemCount - 1)
     }
 
     /**
      * Scroll smoothly to the bottom of the list
      */
     fun smoothScrollToBottom() {
-        if (mRecyclerView != null && mAdapter.itemCount > 0)
-            mRecyclerView!!.smoothScrollToPosition(mAdapter.itemCount - 1)
+        if (recyclerView != null && mAdapter.itemCount > 0)
+            recyclerView!!.smoothScrollToPosition(mAdapter.itemCount - 1)
     }
 
     /**
@@ -456,8 +456,8 @@ class SmartRecyclerView : LinearLayout {
      * @param position position to scroll to
      */
     fun scrollTo(position: Int) {
-        if (mRecyclerView != null)
-            this.mRecyclerView!!.scrollToPosition(position)
+        if (recyclerView != null)
+            this.recyclerView!!.scrollToPosition(position)
     }
 
     /**
@@ -466,8 +466,8 @@ class SmartRecyclerView : LinearLayout {
      * @param position position to scroll to
      */
     fun smoothScrollTo(position: Int) {
-        if (mRecyclerView != null)
-            this.mRecyclerView!!.smoothScrollToPosition(position)
+        if (recyclerView != null)
+            this.recyclerView!!.smoothScrollToPosition(position)
     }
 
 }
