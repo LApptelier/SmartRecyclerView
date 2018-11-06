@@ -6,12 +6,6 @@
     android:animateLayoutChanges="true"
     android:orientation="vertical">
 
-    <ViewStub
-        android:id="@+id/smart_list_empty_stub"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:inflatedId="@+id/smart_list_empty" />
-
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/smart_list_swipe_layout"
         android:layout_width="match_parent"
@@ -36,6 +30,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:inflatedId="@+id/smart_list_loading" />
+
+    <ViewStub
+        android:id="@+id/smart_list_empty_stub"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:inflatedId="@+id/smart_list_empty" />
 
 
 </FrameLayout>
