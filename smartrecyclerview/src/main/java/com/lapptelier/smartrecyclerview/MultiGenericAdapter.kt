@@ -38,7 +38,7 @@ class MultiGenericAdapter
     private val viewHolders: MutableMap<Int, Class<out ViewHolder>> // Map of all the ViewHolders classes, by their layout ressource id
     val listener: ViewHolderInteractionListener // listener for viewHolder actions
     var items: ArrayList<Any> = ArrayList() // Adapter's idem list
-
+    var hasMore: Boolean = false // Flag indicating if there are more item to load
 
     init {
         this.viewHolderForClass = HashMap()
@@ -82,7 +82,6 @@ class MultiGenericAdapter
 
     override fun getItemViewType(position: Int): Int {
         return this.fragmentResources[this.viewHolderForClass[this.items[position].javaClass]]!!
-
     }
 
     // GenericViewHolderAdapter
@@ -121,6 +120,20 @@ class MultiGenericAdapter
         return items.size
     }
 
+    /**
+     * Append an item to the list
+     *
+     * @param item item to append
+     */
+    fun add(item: Any) {
+        this.deletePlaceholder()
+        this.items.add(item)
+        if (hasMore) {
+            this.items.add(PlaceHolderCell())
+            this.notifyItemRangeInserted(this.items.size - 1, 2)
+        } else
+            this.notifyItemInserted(this.items.size - 1)
+    }
 
     /**
      * Add all the given items to the item list.
@@ -129,9 +142,14 @@ class MultiGenericAdapter
      */
     fun addAll(items: List<Any>) {
         this.deletePlaceholder()
-        val index = this.items.size
-        this.items.addAll(items)
-        this.notifyItemRangeInserted(index, items.size)
+        if (items.isEmpty()) {
+            this.notifyDataSetChanged()
+        } else {
+            this.items.addAll(items)
+            if (hasMore)
+                this.items.add(PlaceHolderCell())
+            this.notifyItemRangeInserted(this.items.size - 1, items.size)
+        }
     }
 
     /**
@@ -141,9 +159,19 @@ class MultiGenericAdapter
      * @param position position to insert elements into
      */
     fun insertAll(items: List<Any>, position: Int) {
-        this.deletePlaceholder()
-        this.items.addAll(position, items)
-        this.notifyItemRangeInserted(position, items.size)
+        if (items.isEmpty()) {
+            this.notifyDataSetChanged()
+        } else {
+            if (position < items.size) {
+                this.items.addAll(position, items)
+                this.notifyItemRangeInserted(position, items.size)
+            } else {
+                this.items.addAll(items)
+                this.notifyItemRangeInserted(this.items.count() - 1, items.size)
+            }
+            this.items.addAll(position, items)
+            this.notifyItemRangeInserted(position, items.size)
+        }
     }
 
     /**
@@ -155,10 +183,11 @@ class MultiGenericAdapter
     fun insertAt(position: Int, item: Any) {
         if (position < items.size) {
             this.items.add(position, item)
+            this.notifyItemInserted(position)
         } else {
             this.items.add(item)
+            this.notifyItemInserted(this.items.count() - 1)
         }
-        this.notifyItemInserted(position)
     }
 
     /**
@@ -170,6 +199,8 @@ class MultiGenericAdapter
         if (position < items.size) {
             this.items.removeAt(position)
             this.notifyItemRemoved(position)
+        }else{
+            this.notifyDataSetChanged()
         }
     }
 
@@ -183,6 +214,8 @@ class MultiGenericAdapter
         if (position < items.size) {
             this.items.set(position, item)
             this.notifyItemChanged(position, item)
+        }else{
+            this.notifyDataSetChanged()
         }
     }
 
@@ -200,16 +233,6 @@ class MultiGenericAdapter
         }
     }
 
-    /**
-     * Append an item to the list
-     *
-     * @param item item to append
-     */
-    fun add(item: Any) {
-        this.deletePlaceholder()
-        this.items.add(item)
-        this.notifyItemInserted(this.items.size - 1)
-    }
 
     /**
      * Wipe out the item list

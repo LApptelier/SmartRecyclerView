@@ -34,20 +34,16 @@ internal class TestActivity : AppCompatActivity(), ViewHolderInteractionListener
         adapter = MultiGenericAdapter(String::class.java, TestViewHolder::class.java, R.layout.cell_test, this)
         mRecyclerView!!.setAdapter(adapter)
         mRecyclerView!!.addItemDecoration(DrawableDividerItemDecoration(ContextCompat.getDrawable(baseContext, R.drawable.divider), null, true))
-        mRecyclerView!!.enableEmptyLoadingView(true)
-        mRecyclerView!!.enableLoadMore(true)
-        mRecyclerView!!.enableSwipeToRefresh(true)
-        mRecyclerView!!.setAnimateLayoutChange(true)
         mRecyclerView!!.emptyLayout = R.layout.empty
         mRecyclerView!!.loadingLayout = R.layout.loading
-        mRecyclerView!!.loadMoreLayout = R.layout.loading
+        mRecyclerView!!.loadMoreLayout = R.layout.loadmore
         mRecyclerView!!.setOnMoreListener(this, 2)
         mRecyclerView!!.setRefreshListener(this)
 
         mRecyclerView!!.displayLoadingView()
 
         Handler().postDelayed({
-            mRecyclerView?.enableLoadMore(true)
+            adapter.hasMore = true
         }, 1000)
 
         Handler().postDelayed({
@@ -63,25 +59,25 @@ internal class TestActivity : AppCompatActivity(), ViewHolderInteractionListener
         Log.d("test", "MORE MORE MORE !")
 
         Handler().postDelayed({
-            mRecyclerView?.enableLoadMore(true)
-        }, 1000)
+            adapter.hasMore = true
+        }, 500)
 
         Handler().postDelayed({
             adapter.addAll(elements)
-        }, 5000)
+        }, 1000)
 
     }
 
     override fun onRefresh() {
         Log.d("test", "FRESH-FRESH-FRESH !")
         Handler().postDelayed({
-            mRecyclerView?.enableLoadMore(true)
+            adapter.hasMore = true
         }, 1000)
 
         Handler().postDelayed({
             adapter.clear()
             adapter.addAll(elements)
-        }, 5000)
+        }, 2000)
 
     }
 

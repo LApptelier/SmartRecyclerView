@@ -46,9 +46,6 @@ class SmartRecyclerView : LinearLayout {
     var mLoadingViewStub: ViewStub? = null
     var mEmptyViewStub: ViewStub? = null
 
-    // placeholder cell used to display load more progress
-    private val placeHolderCell = PlaceHolderCell()
-
     /**
      * Return the inflated view layout placed when the list is loading elements
      *
@@ -70,9 +67,6 @@ class SmartRecyclerView : LinearLayout {
     // flag used when either the loadmore, swipe layout loading or full loading screen is displayed
     private var isLoading: Boolean = false
 
-    // flag used to display or not the loadmore progress
-    private var shouldLoadMore: Boolean = false
-
     // recycler view listener
     private lateinit var mInternalOnScrollListener: RecyclerView.OnScrollListener
 
@@ -86,15 +80,21 @@ class SmartRecyclerView : LinearLayout {
     private var emptyLoadingViewEnabled = true
 
     // Generic adapter
-    private lateinit var mAdapter: MultiGenericAdapter
+    private var mAdapter: MultiGenericAdapter? = null
 
     // Layouts
     var loadMoreLayout: Int = 0
+        set(layout) {
+            field = layout
+            mAdapter?.addViewHolderType(PlaceHolderCell::class.java, PlaceHolderViewHolder::class.java, layout)
+        }
+
     var loadingLayout: Int = 0
         set(layout) {
             field = layout
             mLoadingViewStub!!.layoutResource = layout
             loadingView = mLoadingViewStub!!.inflate()
+            emptyLoadingViewEnabled = true
         }
     var emptyLayout: Int = 0
         set(layout) {
@@ -169,7 +169,7 @@ class SmartRecyclerView : LinearLayout {
                         val layoutManager = recyclerView.layoutManager as LinearLayoutManager
 
                         if (layoutManager.findLastVisibleItemPosition() >= layoutManager.itemCount - itemLeftMoreToLoad
-                                && !isLoading && shouldLoadMore) {
+                                && !isLoading && mAdapter != null && mAdapter!!.hasMore) {
 
                             isLoading = true
                             if (mOnMoreListener != null) {
@@ -218,35 +218,44 @@ class SmartRecyclerView : LinearLayout {
      */
     fun setAdapter(adapter: MultiGenericAdapter) {
         mAdapter = adapter
+
+        //adding the placeholder viewholder support
+        if (loadMoreLayout > -1) mAdapter?.addViewHolderType(PlaceHolderCell::class.java, PlaceHolderViewHolder::class.java, loadMoreLayout)
+
         if (recyclerView != null) {
             recyclerView!!.adapter = mAdapter
 
-            this.updateAccessoryViews()
+            this.dismissLoadingView()
 
-            mAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            mAdapter?.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
                 override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
                     super.onItemRangeChanged(positionStart, itemCount)
-                    updateAccessoryViews()
+                    dismissLoadingView()
                 }
 
                 override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                     super.onItemRangeInserted(positionStart, itemCount)
-                    updateAccessoryViews()
+                    dismissLoadingView()
                 }
 
                 override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
                     super.onItemRangeRemoved(positionStart, itemCount)
-                    updateAccessoryViews()
+                    dismissLoadingView()
+                }
+
+                override fun onChanged() {
+                    super.onChanged()
+                    dismissLoadingView()
                 }
 
                 override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
                     super.onItemRangeMoved(fromPosition, toPosition, itemCount)
-                    updateAccessoryViews()
+                    dismissLoadingView()
                 }
 
                 override fun onItemRangeChanged(positionStart: Int, itemCount: Int, payload: Any?) {
                     super.onItemRangeChanged(positionStart, itemCount, payload)
-                    updateAccessoryViews()
+                    dismissLoadingView()
                 }
             })
         }
@@ -256,34 +265,21 @@ class SmartRecyclerView : LinearLayout {
     /**
      * Update the view to display loading if needed
      */
-    private fun updateAccessoryViews() {
-        // hiding the loading view first
-        loadingView?.visibility = View.GONE
+    private fun dismissLoadingView() {
 
         //flag indicating that the data loading is complete
         isLoading = false
 
+        // hiding the loading view first
+        loadingView?.visibility = View.GONE
+
         //hidding swipe to refresh too
         swipeLayout?.isRefreshing = false
 
-        if (mAdapter.isEmpty) {
+        if (mAdapter == null || mAdapter!!.isEmpty) {
             emptyView?.visibility = View.VISIBLE
         } else {
             emptyView?.visibility = View.GONE
-            //if there is more item to load, adding a placeholder cell at the end to display the load more
-            if (shouldLoadMore) {
-                //adding the viewHolder (this is safe to add without prior check, as the adapter is smart enought to not add it twice)
-                if (loadMoreLayout > -1) {
-                    mAdapter.addViewHolderType(PlaceHolderCell::class.java, PlaceHolderViewHolder::class.java, loadMoreLayout)
-                }
-                //removing and adding again the placeholder view to ensure it's always on the last positions
-                mAdapter.deletePlaceholder()
-                mAdapter.items.add(placeHolderCell)
-                mAdapter.notifyDataSetChanged()
-
-            } else {
-                mAdapter.deletePlaceholder()
-            }
         }
     }
 
@@ -308,7 +304,6 @@ class SmartRecyclerView : LinearLayout {
     fun setOnMoreListener(onMoreListener: OnMoreListener, max: Int) {
         mOnMoreListener = onMoreListener
         itemLeftMoreToLoad = max
-        shouldLoadMore = true
     }
 
     /**
@@ -334,20 +329,6 @@ class SmartRecyclerView : LinearLayout {
 
 
     /**
-     * Tell the recyclerView that new item can be loaded after the end of the current list (load more)
-     *
-     * @param shouldLoadMore true to enable the LoadMore process, false otherwise
-     */
-    fun enableLoadMore(shouldLoadMore: Boolean) {
-        this.shouldLoadMore = shouldLoadMore
-        //updating accessory view if the recycler view isn't waiting for new data.
-        // Otherwise, this could display an empty view between the time loadmore is changed
-        // and new data are effectivelly added.
-        if (!isLoading)
-            updateAccessoryViews()
-    }
-
-    /**
      * Tell the recyclerView if the empty view should be displayed when there is no items.
      *
      * @param enableEmpty true to display the empty view, false otherwise
@@ -364,7 +345,7 @@ class SmartRecyclerView : LinearLayout {
         //updating internal loading flag
         isLoading = true
 
-        if (mAdapter.itemCount > 0) {
+        if (mAdapter != null && mAdapter!!.itemCount > 0) {
             if (swipeLayout != null && !swipeLayout!!.isRefreshing) {
                 // on affiche le PTR
                 val typedValue = TypedValue()
@@ -442,16 +423,16 @@ class SmartRecyclerView : LinearLayout {
      * Scroll to the bottom of the list
      */
     fun scrollToBottom() {
-        if (recyclerView != null && mAdapter.itemCount > 0)
-            recyclerView!!.scrollToPosition(mAdapter.itemCount - 1)
+        if (recyclerView != null && mAdapter != null && mAdapter!!.itemCount > 0)
+            recyclerView!!.scrollToPosition(mAdapter!!.itemCount - 1)
     }
 
     /**
      * Scroll smoothly to the bottom of the list
      */
     fun smoothScrollToBottom() {
-        if (recyclerView != null && mAdapter.itemCount > 0)
-            recyclerView!!.smoothScrollToPosition(mAdapter.itemCount - 1)
+        if (recyclerView != null && mAdapter != null && mAdapter!!.itemCount > 0)
+            recyclerView!!.smoothScrollToPosition(mAdapter!!.itemCount - 1)
     }
 
     /**
