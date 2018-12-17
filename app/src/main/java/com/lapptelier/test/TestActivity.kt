@@ -20,7 +20,7 @@ internal class TestActivity : AppCompatActivity(), ViewHolderInteractionListener
 
     private lateinit var adapter: MultiGenericAdapter
 
-    private val elements = Arrays.asList("test 1", "test 2", "test 3", "test 4", "test 5", "test 6", "test 7", "test 8","test 9", "test 10", "test 11", "test 12", "test 13", "test 14", "test 15", "test 16")
+    private val elements = Arrays.asList("test 1", "test 2", "test 3", "test 4", "test 5", "test 6", "test 7", "test 8", "test 9", "test 10", "test 11", "test 12", "test 13", "test 14", "test 15", "test 16")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,10 +29,6 @@ internal class TestActivity : AppCompatActivity(), ViewHolderInteractionListener
 
         //configuration de la liste
         mRecyclerView!!.setLayoutManager(LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false))
-        mRecyclerView!!.setRefreshListener(SwipeRefreshLayout.OnRefreshListener {
-            Log.d("test", "FRESH-FRESH-FRESH !")
-            mRecyclerView!!.enableSwipeToRefresh(false)
-        })
 
         // Configuration de l'adapter
         adapter = MultiGenericAdapter(String::class.java, TestViewHolder::class.java, R.layout.cell_test, this)
@@ -50,7 +46,13 @@ internal class TestActivity : AppCompatActivity(), ViewHolderInteractionListener
 
         mRecyclerView!!.displayLoadingView()
 
-        Handler().postDelayed({ adapter.addAll(elements) }, 2000)
+        Handler().postDelayed({
+            mRecyclerView?.enableLoadMore(true)
+        }, 1000)
+
+        Handler().postDelayed({
+            adapter.addAll(elements)
+        }, 5000)
 
 
     }
@@ -58,12 +60,29 @@ internal class TestActivity : AppCompatActivity(), ViewHolderInteractionListener
 
     // OnMoreListener
     override fun onMoreAsked(overallItemsCount: Int, itemsBeforeMore: Int, maxLastVisiblePosition: Int) {
-        adapter.addAll(elements)
+        Log.d("test", "MORE MORE MORE !")
+
+        Handler().postDelayed({
+            mRecyclerView?.enableLoadMore(true)
+        }, 1000)
+
+        Handler().postDelayed({
+            adapter.addAll(elements)
+        }, 5000)
+
     }
 
     override fun onRefresh() {
-        adapter.clear()
-        adapter.addAll(elements)
+        Log.d("test", "FRESH-FRESH-FRESH !")
+        Handler().postDelayed({
+            mRecyclerView?.enableLoadMore(true)
+        }, 1000)
+
+        Handler().postDelayed({
+            adapter.clear()
+            adapter.addAll(elements)
+        }, 5000)
+
     }
 
 

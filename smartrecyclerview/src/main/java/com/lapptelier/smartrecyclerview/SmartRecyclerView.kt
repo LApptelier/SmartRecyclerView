@@ -367,8 +367,9 @@ class SmartRecyclerView : LinearLayout {
         if (mAdapter.itemCount > 0) {
             if (swipeLayout != null && !swipeLayout!!.isRefreshing) {
                 // on affiche le PTR
-                context.theme.resolveAttribute(android.support.v7.appcompat.R.attr.actionBarSize, TypedValue(), true)
-                swipeLayout?.setProgressViewOffset(false, 0, resources.getDimensionPixelSize(TypedValue().resourceId))
+                val typedValue = TypedValue()
+                context.theme.resolveAttribute(android.support.v7.appcompat.R.attr.actionBarSize, typedValue, true)
+                swipeLayout?.setProgressViewOffset(false, 0, resources.getDimensionPixelSize(typedValue.resourceId))
                 swipeLayout?.isRefreshing = true
             }
         } else {
