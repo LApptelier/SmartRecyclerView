@@ -7,7 +7,7 @@
     <com.lapptelier.smartrecyclerview.SmartRecyclerView
         android:id="@+id/test_smart_recycler_view"
         android:layout_width="match_parent"
-        android:background="@android:color/black"
+        android:background="@android:color/darker_gray"
         android:layout_height="match_parent" />
 
 </FrameLayout>

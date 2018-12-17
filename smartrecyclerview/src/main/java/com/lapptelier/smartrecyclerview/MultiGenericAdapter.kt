@@ -17,7 +17,7 @@ import kotlin.NoSuchElementException
  * Generic implementation of a {@see SmartAdapter} that can manager multiple item type and their corresponding ViewHolders.
  *
  *
- * Sub class of [AbstractGenericAdapter].
+ * Sub class of {@link AbstractGenericAdapter}
  *
  * @author L'Apptelier SARL
  * @date 14/09/2017
@@ -37,11 +37,10 @@ class MultiGenericAdapter
     private val viewHolderForClass: MutableMap<Class<*>, Class<out ViewHolder>> // Map of all corresponding ViewHolders classes for a given item class
     private val viewHolders: MutableMap<Int, Class<out ViewHolder>> // Map of all the ViewHolders classes, by their layout ressource id
     val listener: ViewHolderInteractionListener // listener for viewHolder actions
-    var items: ArrayList<Any>? = null // Adapter's idem list
+    var items: ArrayList<Any> = ArrayList() // Adapter's idem list
 
 
     init {
-        this.items = ArrayList()
         this.viewHolderForClass = HashMap()
         this.fragmentResources = HashMap()
         this.viewHolders = HashMap()
@@ -77,11 +76,12 @@ class MultiGenericAdapter
 
     @Suppress("UNCHECKED_CAST")
     override fun onBindViewHolder(holder: ViewHolder, index: Int) {
-        (holder as SmartViewHolder<Any?>).setItem(items!![index], listener)
+        if (items.size > index)
+            (holder as SmartViewHolder<Any?>).setItem(items[index], listener)
     }
 
     override fun getItemViewType(position: Int): Int {
-        return this.fragmentResources[this.viewHolderForClass[this.items!![position].javaClass]]!!
+        return this.fragmentResources[this.viewHolderForClass[this.items[position].javaClass]]!!
 
     }
 
@@ -110,7 +110,7 @@ class MultiGenericAdapter
      * @return true if the list is empty, false otherwise
      */
     val isEmpty: Boolean
-        get() = items != null && items!!.isEmpty()
+        get() = items.isEmpty()
 
 
     /**
@@ -118,11 +118,7 @@ class MultiGenericAdapter
      * @return the number of items in this adapter
      */
     override fun getItemCount(): Int {
-        return if (items != null) {
-            items!!.size
-        } else {
-            0
-        }
+        return items.size
     }
 
 
@@ -133,8 +129,9 @@ class MultiGenericAdapter
      */
     fun addAll(items: List<Any>) {
         this.deletePlaceholder()
-        this.items!!.addAll(items)
-        this.notifyDataSetChanged()
+        val index = this.items.size
+        this.items.addAll(items)
+        this.notifyItemRangeInserted(index, items.size)
     }
 
     /**
@@ -145,8 +142,8 @@ class MultiGenericAdapter
      */
     fun insertAll(items: List<Any>, position: Int) {
         this.deletePlaceholder()
-        this.items!!.addAll(position, items)
-        this.notifyItemInserted(position)
+        this.items.addAll(position, items)
+        this.notifyItemRangeInserted(position, items.size)
     }
 
     /**
@@ -156,10 +153,10 @@ class MultiGenericAdapter
      * @param position position to insert to
      */
     fun insertAt(position: Int, item: Any) {
-        if (position < items!!.size) {
-            this.items!!.add(position, item)
+        if (position < items.size) {
+            this.items.add(position, item)
         } else {
-            this.items!!.add(item)
+            this.items.add(item)
         }
         this.notifyItemInserted(position)
     }
@@ -170,8 +167,8 @@ class MultiGenericAdapter
      * @param position position of the item to delete
      */
     fun removeAt(position: Int) {
-        if (position < items!!.size) {
-            this.items!!.removeAt(position)
+        if (position < items.size) {
+            this.items.removeAt(position)
             this.notifyItemRemoved(position)
         }
     }
@@ -183,8 +180,8 @@ class MultiGenericAdapter
      * @param item     new item
      */
     fun replaceAt(position: Int, item: Any) {
-        if (position < items!!.size) {
-            this.items!!.set(position, item)
+        if (position < items.size) {
+            this.items.set(position, item)
             this.notifyItemChanged(position, item)
         }
     }
@@ -196,10 +193,10 @@ class MultiGenericAdapter
      * @return the item at the given position, null otherwise
      */
     fun getItemAt(position: Int): Any? {
-        return if (position < 0 || position > this.items!!.size - 1) {
+        return if (position < 0 || position > this.items.size - 1) {
             null
         } else {
-            this.items!![position]
+            this.items[position]
         }
     }
 
@@ -210,15 +207,15 @@ class MultiGenericAdapter
      */
     fun add(item: Any) {
         this.deletePlaceholder()
-        this.items!!.add(item)
-        this.notifyItemRangeChanged(if (this.items!!.size > 1) this.items!!.size - 1 else 0, this.items!!.size)
+        this.items.add(item)
+        this.notifyItemInserted(this.items.size - 1)
     }
 
     /**
      * Wipe out the item list
      */
     fun clear() {
-        this.items!!.clear()
+        this.items.clear()
     }
 
     /**
@@ -228,7 +225,7 @@ class MultiGenericAdapter
      * @return true if the given object is already in the item list, false otherwise
      */
     operator fun contains(item: Any): Boolean {
-        return this.items!!.contains(item)
+        return this.items.contains(item)
     }
 
 
@@ -240,8 +237,8 @@ class MultiGenericAdapter
      */
     fun getObjectIndex(item: Any): Int {
         var selectedIndex = -1
-        this.items!!.indices.forEach { index ->
-            if (this.items!![index] == item) {
+        this.items.indices.forEach { index ->
+            if (this.items[index] == item) {
                 selectedIndex = index
             }
         }
@@ -253,13 +250,13 @@ class MultiGenericAdapter
      */
     fun deletePlaceholder() {
         val selectedIndexes = ArrayList<Int>()
-        this.items!!.indices.forEach { index ->
-            if (this.items!![index] is PlaceHolderCell) {
+        this.items.indices.forEach { index ->
+            if (this.items[index] is PlaceHolderCell) {
                 selectedIndexes.add(index)
             }
         }
         selectedIndexes.forEach {
-            this.items!!.removeAt(it)
+            this.items.removeAt(it)
         }
     }
 

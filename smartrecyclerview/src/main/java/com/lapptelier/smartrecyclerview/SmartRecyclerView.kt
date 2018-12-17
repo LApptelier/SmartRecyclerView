@@ -67,8 +67,8 @@ class SmartRecyclerView : LinearLayout {
     // main layout of the view
     private var mOuterLayout: LinearLayout? = null
 
-    // flag used when the loadmore progress is displayed
-    private var isLoadingMore: Boolean = false
+    // flag used when either the loadmore, swipe layout loading or full loading screen is displayed
+    private var isLoading: Boolean = false
 
     // flag used to display or not the loadmore progress
     private var shouldLoadMore: Boolean = false
@@ -169,9 +169,9 @@ class SmartRecyclerView : LinearLayout {
                         val layoutManager = recyclerView.layoutManager as LinearLayoutManager
 
                         if (layoutManager.findLastVisibleItemPosition() >= layoutManager.itemCount - itemLeftMoreToLoad
-                                && !isLoadingMore && shouldLoadMore) {
+                                && !isLoading && shouldLoadMore) {
 
-                            isLoadingMore = true
+                            isLoading = true
                             if (mOnMoreListener != null) {
                                 mOnMoreListener!!.onMoreAsked(this@SmartRecyclerView.recyclerView!!.adapter!!.itemCount, itemLeftMoreToLoad, layoutManager.findLastVisibleItemPosition())
                             }
@@ -244,11 +244,6 @@ class SmartRecyclerView : LinearLayout {
                     updateAccessoryViews()
                 }
 
-                override fun onChanged() {
-                    super.onChanged()
-                    updateAccessoryViews()
-                }
-
                 override fun onItemRangeChanged(positionStart: Int, itemCount: Int, payload: Any?) {
                     super.onItemRangeChanged(positionStart, itemCount, payload)
                     updateAccessoryViews()
@@ -262,11 +257,11 @@ class SmartRecyclerView : LinearLayout {
      * Update the view to display loading if needed
      */
     private fun updateAccessoryViews() {
-        // hiddig the loading view first
+        // hiding the loading view first
         loadingView?.visibility = View.GONE
 
         //flag indicating that the data loading is complete
-        isLoadingMore = false
+        isLoading = false
 
         //hidding swipe to refresh too
         swipeLayout?.isRefreshing = false
@@ -283,7 +278,9 @@ class SmartRecyclerView : LinearLayout {
                 }
                 //removing and adding again the placeholder view to ensure it's always on the last positions
                 mAdapter.deletePlaceholder()
-                mAdapter.items!!.add(placeHolderCell)
+                mAdapter.items.add(placeHolderCell)
+                mAdapter.notifyDataSetChanged()
+
             } else {
                 mAdapter.deletePlaceholder()
             }
@@ -343,7 +340,11 @@ class SmartRecyclerView : LinearLayout {
      */
     fun enableLoadMore(shouldLoadMore: Boolean) {
         this.shouldLoadMore = shouldLoadMore
-        updateAccessoryViews()
+        //updating accessory view if the recycler view isn't waiting for new data.
+        // Otherwise, this could display an empty view between the time loadmore is changed
+        // and new data are effectivelly added.
+        if (!isLoading)
+            updateAccessoryViews()
     }
 
     /**
@@ -360,12 +361,14 @@ class SmartRecyclerView : LinearLayout {
      * Display the loading placeholder ontop of the list
      */
     fun displayLoadingView() {
+        //updating internal loading flag
+        isLoading = true
+
         if (mAdapter.itemCount > 0) {
             if (swipeLayout != null && !swipeLayout!!.isRefreshing) {
                 // on affiche le PTR
-                val typed_value = TypedValue()
-                context.theme.resolveAttribute(android.support.v7.appcompat.R.attr.actionBarSize, typed_value, true)
-                swipeLayout?.setProgressViewOffset(false, 0, resources.getDimensionPixelSize(typed_value.resourceId))
+                context.theme.resolveAttribute(android.support.v7.appcompat.R.attr.actionBarSize, TypedValue(), true)
+                swipeLayout?.setProgressViewOffset(false, 0, resources.getDimensionPixelSize(TypedValue().resourceId))
                 swipeLayout?.isRefreshing = true
             }
         } else {

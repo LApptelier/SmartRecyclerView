@@ -29,8 +29,8 @@ android {
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 12
-        versionName "2.3.2"
+        versionCode 13
+        versionName "2.3.3"
     }
 
     buildTypes {
@@ -60,7 +60,7 @@ ext {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation"org.jetbrains.kotlinx:kotlinx-coroutines-android:0.23.3"
+    implementation"org.jetbrains.kotlinx:kotlinx-coroutines-android:0.30.2"
     implementation"org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
