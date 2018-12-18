@@ -81,7 +81,10 @@ class MultiGenericAdapter
     }
 
     override fun getItemViewType(position: Int): Int {
-        return this.fragmentResources[this.viewHolderForClass[this.items[position].javaClass]]!!
+        return if (position < this.items.size && this.viewHolderForClass[this.items[position].javaClass] != null)
+            this.fragmentResources[this.viewHolderForClass[this.items[position].javaClass]]!!
+        else
+            -1
     }
 
     // GenericViewHolderAdapter
@@ -121,41 +124,80 @@ class MultiGenericAdapter
     }
 
     /**
-     * Append an item to the list
+     * Clear the list and add the given item
      *
      * @param item item to append
      */
     fun add(item: Any) {
-        this.deletePlaceholder()
+        this.clear()
+        this.notifyDataSetChanged()
         this.items.add(item)
         if (hasMore) {
             this.items.add(PlaceHolderCell())
-            this.notifyItemRangeInserted(this.items.size - 1, 2)
-        } else
-            this.notifyItemInserted(this.items.size - 1)
+            this.notifyItemRangeInserted(0, 2)
+        }
+        this.notifyItemRangeInserted(0, 1)
     }
 
     /**
-     * Add all the given items to the item list.
+     * Append all the given items to the item list.
      *
-     * @param items items to add
+     * @param items items to append
      */
     fun addAll(items: List<Any>) {
+        this.clear()
+        if (items.isEmpty()) {
+            this.notifyDataSetChanged()
+        } else {
+            this.clear()
+            val tempList: ArrayList<Any> = ArrayList()
+            tempList.addAll(items)
+            if (hasMore) {
+                tempList.add(PlaceHolderCell())
+            }
+            this.items = tempList
+            notifyDataSetChanged()
+        }
+    }
+
+    /**
+     * Append an item to the list
+     *
+     * @param item item to append
+     */
+    fun append(item: Any) {
         this.deletePlaceholder()
+        val index = this.items.size
+        this.items.add(item)
+        if (hasMore) {
+            this.items.add(PlaceHolderCell())
+            this.notifyItemRangeInserted(index, 2)
+        } else
+            this.notifyItemInserted(index)
+    }
+
+    /**
+     * Append all the given items to the item list.
+     *
+     * @param items items to append
+     */
+    fun appendAll(items: List<Any>) {
+        this.deletePlaceholder()
+        val index = this.items.size
         if (items.isEmpty()) {
             this.notifyDataSetChanged()
         } else {
             this.items.addAll(items)
             if (hasMore)
                 this.items.add(PlaceHolderCell())
-            this.notifyItemRangeInserted(this.items.size - 1, items.size)
+            this.notifyItemRangeInserted(index, items.size)
         }
     }
 
     /**
      * Add all the given items to the item list.
      *
-     * @param items    items to add
+     * @param items    items to append
      * @param position position to insert elements into
      */
     fun insertAll(items: List<Any>, position: Int) {
@@ -167,7 +209,7 @@ class MultiGenericAdapter
                 this.notifyItemRangeInserted(position, items.size)
             } else {
                 this.items.addAll(items)
-                this.notifyItemRangeInserted(this.items.count() - 1, items.size)
+                this.notifyItemRangeInserted(this.items.count(), items.size)
             }
             this.items.addAll(position, items)
             this.notifyItemRangeInserted(position, items.size)
@@ -186,7 +228,7 @@ class MultiGenericAdapter
             this.notifyItemInserted(position)
         } else {
             this.items.add(item)
-            this.notifyItemInserted(this.items.count() - 1)
+            this.notifyItemInserted(this.items.count())
         }
     }
 
@@ -279,8 +321,9 @@ class MultiGenericAdapter
                 selectedIndexes.add(index)
             }
         }
-        selectedIndexes.forEach {
-            this.items.removeAt(it)
+        selectedIndexes.forEach { index ->
+            this.items.removeAt(index)
+            this.notifyItemRemoved(index)
         }
     }
 

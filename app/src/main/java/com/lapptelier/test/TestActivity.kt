@@ -32,7 +32,7 @@ internal class TestActivity : AppCompatActivity(), ViewHolderInteractionListener
 
         // Configuration de l'adapter
         adapter = MultiGenericAdapter(String::class.java, TestViewHolder::class.java, R.layout.cell_test, this)
-        mRecyclerView!!.setAdapter(adapter)
+        mRecyclerView!!.setAdapter(adapter, true)
         mRecyclerView!!.addItemDecoration(DrawableDividerItemDecoration(ContextCompat.getDrawable(baseContext, R.drawable.divider), null, true))
         mRecyclerView!!.emptyLayout = R.layout.empty
         mRecyclerView!!.loadingLayout = R.layout.loading
@@ -63,7 +63,7 @@ internal class TestActivity : AppCompatActivity(), ViewHolderInteractionListener
         }, 500)
 
         Handler().postDelayed({
-            adapter.addAll(elements)
+            adapter.appendAll(elements)
         }, 1000)
 
     }
@@ -75,7 +75,6 @@ internal class TestActivity : AppCompatActivity(), ViewHolderInteractionListener
         }, 1000)
 
         Handler().postDelayed({
-            adapter.clear()
             adapter.addAll(elements)
         }, 2000)
 
