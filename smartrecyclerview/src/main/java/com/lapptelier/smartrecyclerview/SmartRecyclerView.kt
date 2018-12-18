@@ -217,6 +217,16 @@ class SmartRecyclerView : LinearLayout {
      * @param adapter inner RecyclerView' adapter
      */
     fun setAdapter(adapter: MultiGenericAdapter) {
+        setAdapter(adapter, true)
+    }
+
+    /**
+     * Set inner RecyclerView' adapter
+     *
+     * @param adapter inner RecyclerView' adapter
+     * @param dismissLoadingViewAutomatically true to handle loading view automatically at every adapter changes
+     */
+    fun setAdapter(adapter: MultiGenericAdapter, dismissLoadingViewAutomatically: Boolean) {
         mAdapter = adapter
 
         //adding the placeholder viewholder support
@@ -225,39 +235,41 @@ class SmartRecyclerView : LinearLayout {
         if (recyclerView != null) {
             recyclerView!!.adapter = mAdapter
 
-            this.dismissLoadingView()
+            if (dismissLoadingViewAutomatically) {
+                this.dismissLoadingView()
 
-            mAdapter?.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
-                override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
-                    super.onItemRangeChanged(positionStart, itemCount)
-                    dismissLoadingView()
-                }
+                mAdapter?.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+                    override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
+                        super.onItemRangeChanged(positionStart, itemCount)
+                        dismissLoadingView()
+                    }
 
-                override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                    super.onItemRangeInserted(positionStart, itemCount)
-                    dismissLoadingView()
-                }
+                    override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                        super.onItemRangeInserted(positionStart, itemCount)
+                        dismissLoadingView()
+                    }
 
-                override fun onChanged() {
-                    super.onChanged()
-                    dismissLoadingView()
-                }
+                    override fun onChanged() {
+                        super.onChanged()
+                        dismissLoadingView()
+                    }
 
-                override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
-                    super.onItemRangeRemoved(positionStart, itemCount)
-                    dismissLoadingView()
-                }
+                    override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
+                        super.onItemRangeRemoved(positionStart, itemCount)
+                        dismissLoadingView()
+                    }
 
-                override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
-                    super.onItemRangeMoved(fromPosition, toPosition, itemCount)
-                    dismissLoadingView()
-                }
+                    override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
+                        super.onItemRangeMoved(fromPosition, toPosition, itemCount)
+                        dismissLoadingView()
+                    }
 
-                override fun onItemRangeChanged(positionStart: Int, itemCount: Int, payload: Any?) {
-                    super.onItemRangeChanged(positionStart, itemCount, payload)
-                    dismissLoadingView()
-                }
-            })
+                    override fun onItemRangeChanged(positionStart: Int, itemCount: Int, payload: Any?) {
+                        super.onItemRangeChanged(positionStart, itemCount, payload)
+                        dismissLoadingView()
+                    }
+                })
+            }
         }
 
     }
@@ -265,7 +277,7 @@ class SmartRecyclerView : LinearLayout {
     /**
      * Update the view to display loading if needed
      */
-    private fun dismissLoadingView() {
+    fun dismissLoadingView() {
 
         //flag indicating that the data loading is complete
         isLoading = false
