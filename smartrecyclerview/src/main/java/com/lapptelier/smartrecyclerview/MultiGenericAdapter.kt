@@ -199,7 +199,7 @@ class MultiGenericAdapter
         if (position < items.size) {
             this.items.removeAt(position)
             this.notifyItemRemoved(position)
-        }else{
+        } else {
             this.notifyDataSetChanged()
         }
     }
@@ -214,7 +214,7 @@ class MultiGenericAdapter
         if (position < items.size) {
             this.items.set(position, item)
             this.notifyItemChanged(position, item)
-        }else{
+        } else {
             this.notifyDataSetChanged()
         }
     }
@@ -239,6 +239,7 @@ class MultiGenericAdapter
      */
     fun clear() {
         this.items.clear()
+        this.notifyDataSetChanged()
     }
 
     /**

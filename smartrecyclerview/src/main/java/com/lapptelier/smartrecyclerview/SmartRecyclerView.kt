@@ -238,13 +238,13 @@ class SmartRecyclerView : LinearLayout {
                     dismissLoadingView()
                 }
 
-                override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
-                    super.onItemRangeRemoved(positionStart, itemCount)
+                override fun onChanged() {
+                    super.onChanged()
                     dismissLoadingView()
                 }
 
-                override fun onChanged() {
-                    super.onChanged()
+                override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
+                    super.onItemRangeRemoved(positionStart, itemCount)
                     dismissLoadingView()
                 }
 
