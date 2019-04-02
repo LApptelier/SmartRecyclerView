@@ -31,7 +31,7 @@ import java.util.*
  * @author L'Apptelier SARL
  * @date 14/09/2017
  */
-class SmartRecyclerView : LinearLayout {
+open class SmartRecyclerView : LinearLayout {
 
     // count of item to display before firing the loadmore action
     private var itemLeftMoreToLoad = 10

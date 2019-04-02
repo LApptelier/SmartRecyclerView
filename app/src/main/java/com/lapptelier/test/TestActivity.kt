@@ -81,7 +81,7 @@ internal class TestActivity : AppCompatActivity(), ViewHolderInteractionListener
     }
 
 
-    override fun onItemAction(item: Any, viewId: Int, action: ViewHolderInteraction) {
+    override fun onItemAction(item: Any, viewId: Int, viewHolderInteraction: ViewHolderInteraction) {
         adapter.removeAt(adapter.getObjectIndex(item))
     }
 }

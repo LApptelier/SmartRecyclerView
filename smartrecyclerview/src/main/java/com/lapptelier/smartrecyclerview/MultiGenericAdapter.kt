@@ -22,7 +22,7 @@ import kotlin.NoSuchElementException
  * @author L'Apptelier SARL
  * @date 14/09/2017
  */
-class MultiGenericAdapter
+open class MultiGenericAdapter
 
 /**
  * Full constructor

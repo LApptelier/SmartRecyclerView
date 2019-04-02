@@ -26,7 +26,7 @@ import android.view.View
 /**
  * Item decoration which draws item divider between each items.
  */
-class DrawableDividerItemDecoration
+open class DrawableDividerItemDecoration
 /**
  * Constructor.
  *

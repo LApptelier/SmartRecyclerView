@@ -4,7 +4,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath 'com.android.tools.build:gradle:3.3.2'
         // used to generate a POM file
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
     }
@@ -29,8 +29,8 @@ android {
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 16
-        versionName "2.5.0"
+        versionCode 17
+        versionName "2.6.0"
     }
 
     buildTypes {
@@ -60,7 +60,6 @@ ext {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation"org.jetbrains.kotlinx:kotlinx-coroutines-android:0.30.2"
     implementation"org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
@@ -85,10 +84,10 @@ bintray {
         vcsUrl = 'https://github.com/LApptelier/SmartRecyclerView.git'
         websiteUrl = 'https://github.com/LApptelier/SmartRecyclerView.git'
         version {
-            name = '2.0.0-Beta-1'
-            desc = 'Beta version of the 2.0.0'
+            name = '2.6.0'
+            desc = '2.6.0'
             released = new Date()
-            vcsTag = '2.0.0-Beta-1'
+            vcsTag = '2.6.0'
         }
     }
 }
@@ -100,10 +99,10 @@ install {
     repositories.mavenInstaller {
         pom.project {
             group = 'com.lapptelier.smartrecyclerview'
-            version = '2.0.0-Beta-1'
+            version = '2.6.0'
             group "com.codepath.libraries"
             artifactId "smartrecyclerview"
-            version "2.0.0-Beta-1"
+            version "2.6.0"
         }
     }
 }
