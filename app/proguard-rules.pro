@@ -23,3 +23,8 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-keep class com.lapptelier.** {*;}
+-keep enum com.lapptelier.** {*;}
+-keep interface com.lapptelier.** {*;}
+-dontwarn com.lapptelier.**
+-keep class android.support.v7.widget.** {*;}

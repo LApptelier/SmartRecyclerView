@@ -20,8 +20,9 @@ import android.graphics.Canvas
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.os.Build
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
+import kotlin.math.abs
 
 /**
  * Item decoration which draws item divider between each items.
@@ -64,7 +65,7 @@ open class DrawableDividerItemDecoration
             val childRight = child.right + child.translationX
             val nextChildLeft = nextChild.left + child.translationX
 
-            if (!(mHorizontalDividerHeight != 0 && Math.abs(nextChildTop - childBottom) < yPositionThreshold || mVerticalDividerWidth != 0 && Math.abs(nextChildLeft - childRight) < xPositionThreshold)) {
+            if (!(mHorizontalDividerHeight != 0 && abs(nextChildTop - childBottom) < yPositionThreshold || mVerticalDividerWidth != 0 && abs(nextChildLeft - childRight) < xPositionThreshold)) {
                 continue
             }
 
@@ -72,7 +73,7 @@ open class DrawableDividerItemDecoration
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 val childZ = child.translationZ + child.elevation
                 val nextChildZ = child.translationZ + child.elevation
-                if (Math.abs(nextChildZ - childZ) >= zPositionThreshold) {
+                if (abs(nextChildZ - childZ) >= zPositionThreshold) {
                     continue
                 }
             }

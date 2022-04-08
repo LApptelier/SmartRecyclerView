@@ -1,25 +1,42 @@
 package com.lapptelier.test
 
-import android.view.View
-import android.widget.TextView
-import com.lapptelier.smartrecyclerview.SmartViewHolder
+import androidx.recyclerview.widget.RecyclerView
+import com.lapptelier.smartrecyclerview.SmartBindingViewHolder
 import com.lapptelier.smartrecyclerview.ViewHolderInteraction
 import com.lapptelier.smartrecyclerview.ViewHolderInteractionListener
+import com.lapptelier.test.databinding.CellTestBinding
 
 /**
  * @author L'Apptelier SARL
  * @date 14/09/2017
  */
-internal class TestViewHolder(view: View) : SmartViewHolder<String>(view) {
-    var textView: TextView = view.findViewById(R.id.test_text)
+internal class TestViewHolder(private val binding: CellTestBinding) :
+    SmartBindingViewHolder<String?>(binding.root) {
 
-    private var cellText: String? = null
+    override fun setItem(
+        item: String?,
+        listener: ViewHolderInteractionListener,
+        recyclerViewPool: RecyclerView.RecycledViewPool?
+    ) {
+        binding.text = item
+        item?.let {
+            binding.root.setOnClickListener {
+                listener.onItemAction(
+                    item,
+                    binding.root.id,
+                    ViewHolderInteraction.TAP
+                )
+            }
+            binding.root.setOnLongClickListener {
+                listener.onItemAction(
+                    item,
+                    binding.root.id,
+                    ViewHolderInteraction.LONG_TAP
+                )
+                false
+            }
 
-    override fun setItem(item: String, listener: ViewHolderInteractionListener) {
-        cellText = item
-        textView.text = item
-
-        textView.setOnClickListener { listener.onItemAction(item, textView.id, ViewHolderInteraction.TAP) }
-        textView.isLongClickable = true
+        }
+        binding.executePendingBindings()
     }
 }

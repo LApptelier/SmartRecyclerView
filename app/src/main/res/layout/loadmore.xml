@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@android:color/holo_blue_light"
-    android:gravity="center">
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:background="@android:color/darker_gray"
+  android:gravity="center">
 
-    <ProgressBar
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_gravity="center"
-        android:progressTint="@android:color/white"
-        android:alpha="1"
-        android:layout_margin="20dp"
-        android:indeterminate="true"
-        android:gravity="center" />
+  <ProgressBar
+    android:layout_width="32dp"
+    android:layout_height="32dp"
+    android:layout_gravity="center"
+    android:layout_margin="20dp"
+    android:alpha="1"
+    android:gravity="center"
+    android:progressTintMode="add"
+    android:secondaryProgressTint="@android:color/black"
+    android:indeterminate="true"
+    android:progressTint="@android:color/black" />
 </FrameLayout>

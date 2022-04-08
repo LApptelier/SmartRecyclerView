@@ -1,110 +1,22 @@
 package com.lapptelier.smartrecyclerview
 
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.RecyclerView.ViewHolder
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import java.util.ArrayList
-import java.util.HashMap
-import kotlin.NoSuchElementException
+import androidx.recyclerview.widget.RecyclerView
+import com.lapptelier.smartrecyclerview.PlaceHolderCell
+import com.lapptelier.smartrecyclerview.ViewHolderInteractionListener
 
 /**
- * com.lapptelier.smartrecyclerview.smart_recycler_view.MultiGenericAdapter
- *
- *
- * Generic implementation of a {@see SmartAdapter} that can manager multiple item type and their corresponding ViewHolders.
- *
- *
- * Sub class of {@link AbstractGenericAdapter}
+ * com.lapptelier.smartrecyclerview.GenericAdapter
+ * <p/>
+ * Generic adapter
+ * <p/>
  *
  * @author L'Apptelier SARL
- * @date 14/09/2017
+ * @date 02/09/2020
  */
-open class MultiGenericAdapter
+abstract class GenericAdapter(val listener: ViewHolderInteractionListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-/**
- * Full constructor
- *
- * @param itemClass         class of an item in the list
- * @param viewHolderClass   associated view holde class for the given class
- * @param fragment_resource ressources_id of the layout for the given ViewHolder class
- */
-(itemClass: Class<*>, viewHolderClass: Class<out ViewHolder>, fragment_resource: Int, listener: ViewHolderInteractionListener) : GenericViewHolderAdapter, RecyclerView.Adapter<ViewHolder>() {
-
-    private val fragmentResources: MutableMap<Class<out ViewHolder>, Int> // List of all ViewHolders' layout ressource_id
-    private val viewHolderForClass: MutableMap<Class<*>, Class<out ViewHolder>> // Map of all corresponding ViewHolders classes for a given item class
-    private val viewHolders: MutableMap<Int, Class<out ViewHolder>> // Map of all the ViewHolders classes, by their layout ressource id
-    val listener: ViewHolderInteractionListener // listener for viewHolder actions
     var items: ArrayList<Any> = ArrayList() // Adapter's idem list
     var hasMore: Boolean = false // Flag indicating if there are more item to load
-
-    init {
-        this.viewHolderForClass = HashMap()
-        this.fragmentResources = HashMap()
-        this.viewHolders = HashMap()
-        this.listener = listener
-    }
-
-    init {
-        this.addViewHolderType(itemClass, viewHolderClass, fragment_resource)
-    }
-
-
-    @Suppress("UNCHECKED_CAST")
-    override fun onCreateViewHolder(viewGroup: ViewGroup, index: Int): ViewHolder {
-
-        if (index > -1) {
-            //getting the ViewHolder class for a given item position
-            val viewHolderClass = this.viewHolders[index]
-
-            val view = LayoutInflater.from(viewGroup.context).inflate(fragmentResources.get(viewHolderClass)!!, viewGroup, false)
-
-            //getting the constuctor of the ViewHolder by instropection
-            try {
-                val constructor = viewHolderClass!!.getConstructor(View::class.java)
-                return constructor.newInstance(view) as ViewHolder
-            } catch (exception: Exception) {
-                Log.e("MultiGenericAdapter", "exception while creating viewHolder", exception)
-            }
-
-        }
-
-        throw NoSuchElementException("No ViewHolder is defined for items at this index")
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    override fun onBindViewHolder(holder: ViewHolder, index: Int) {
-        if (items.size > index)
-            (holder as SmartViewHolder<Any?>).setItem(items[index], listener)
-    }
-
-    override fun getItemViewType(position: Int): Int {
-        return if (position < this.items.size && this.viewHolderForClass[this.items[position].javaClass] != null)
-            this.fragmentResources[this.viewHolderForClass[this.items[position].javaClass]]!!
-        else
-            -1
-    }
-
-    // GenericViewHolderAdapter
-    override fun addViewHolderType(itemClass: Class<*>, viewHolderClass: Class<out ViewHolder>, fragment_resource: Int) {
-        this.viewHolderForClass[itemClass] = viewHolderClass
-        this.fragmentResources[viewHolderClass] = fragment_resource
-        this.viewHolders[fragment_resource] = viewHolderClass
-    }
-
-    // GenericViewHolderAdapter
-    override fun removeViewHolderType(viewHolderClass: Class<out ViewHolder>) {
-        if (viewHolderForClass.containsKey(viewHolderClass)) {
-            this.viewHolderForClass.remove(viewHolderClass)
-        }
-        if (fragmentResources.containsKey(viewHolderClass)) {
-            if (this.viewHolders.containsKey(fragmentResources[viewHolderClass]))
-                this.viewHolders.remove(fragmentResources[viewHolderClass])
-            this.fragmentResources.remove(viewHolderClass)
-        }
-    }
 
     /**
      * Return true if the list is empty
@@ -314,7 +226,7 @@ open class MultiGenericAdapter
     /**
      * Delete all placeholders
      */
-    fun deletePlaceholder() {
+    private fun deletePlaceholder() {
         val selectedIndexes = ArrayList<Int>()
         this.items.indices.forEach { index ->
             if (this.items[index] is PlaceHolderCell) {
@@ -326,5 +238,4 @@ open class MultiGenericAdapter
             this.notifyItemRemoved(index)
         }
     }
-
 }

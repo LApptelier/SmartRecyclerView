@@ -1,45 +1,61 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-
-
-allprojects {
-    repositories {
-        jcenter()
-        maven {
-            url "https://maven.google.com"
-        }
-    }
-}
-
-ext {
-    supportLibraryVersion = '28.0.0'
-}
+apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion "28.0.3"
+    buildToolsVersion '32.0.0'
+    compileSdkVersion 32
     defaultConfig {
         applicationId "com.lapptelier.smartrecyclerviewlib"
-        minSdkVersion 19
-        targetSdkVersion 28
-        versionCode 2
-        versionName "1.0.0"
+        minSdkVersion 26
+        targetSdkVersion 32
+        versionName "2.0.0"
+        versionCode 30
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
+        multiDexEnabled true
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["objectbox.incremental": "true"]
+            }
+        }
+    }
+    lintOptions {
+        abortOnError false
+    }
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/rxjava.properties'
+        exclude 'META-INF/ASL2.0'
+    }
+    compileOptions {
+        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        freeCompilerArgs += ["-Xopt-in=kotlin.RequiresOptIn"]
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+    buildFeatures {
+        dataBinding true
+        viewBinding true
     }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
+    implementation 'com.google.android.material:material:1.5.0'
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     implementation project(':smartrecyclerview')
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation"com.android.support.constraint:constraint-layout:1.1.3"
-    implementation"com.android.support:recyclerview-v7:$supportLibraryVersion"
-    implementation"com.android.support:appcompat-v7:$supportLibraryVersion"
-    implementation"com.android.support:support-v4:$supportLibraryVersion"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.6.20"
+    implementation "com.android.support.constraint:constraint-layout:2.0.4"
+    implementation "androidx.recyclerview:recyclerview:1.2.1"
+    implementation "com.android.support:appcompat-v7:$supportLibraryVersion"
+    implementation "com.android.support:support-v4:$supportLibraryVersion"
 
 
 }

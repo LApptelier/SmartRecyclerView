@@ -16,7 +16,7 @@ interface ViewHolderInteractionListener {
      *
      * @param item the item corresponding to the touched cell
      * @param viewId id of the touched view in the cell
-     * @param action action excecuted on the cell, see [ViewHolderInteraction]
+     * @param viewHolderInteraction action excecuted on the cell, see [ViewHolderInteraction]
      */
     fun onItemAction(item: Any, viewId: Int, viewHolderInteraction: ViewHolderInteraction)
 }

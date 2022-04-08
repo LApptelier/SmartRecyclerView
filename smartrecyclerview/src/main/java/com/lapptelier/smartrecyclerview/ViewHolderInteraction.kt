@@ -3,7 +3,7 @@ package com.lapptelier.smartrecyclerview
 /**
  * com.lapptelier.smartrecyclerview.ViewHolderInteraction
  * <p/>
- *
+ * Description of currently possible the view holder interactions
  * <p/>
  *
  * @author L'Apptelier SARL

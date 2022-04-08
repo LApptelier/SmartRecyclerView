@@ -1,36 +1,17 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        google()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.2'
-        // used to generate a POM file
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
-    }
-}
-
-plugins {
-    id "com.jfrog.bintray" version "1.7.3"
-}
-
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: 'com.github.dcendents.android-maven'
-apply plugin: 'com.jfrog.bintray'
+apply plugin: 'kotlin-kapt'
 
 group = 'com.github.LApptelier'
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion "28.0.3"
-
+    compileSdkVersion 32
     defaultConfig {
+    multiDexEnabled true
         minSdkVersion 19
-        targetSdkVersion 28
+        targetSdkVersion 32
         versionCode 17
-        versionName "2.6.0"
+        versionName "3.0.0"
     }
 
     buildTypes {
@@ -41,68 +22,74 @@ android {
 
         }
     }
-}
-
-allprojects {
-    repositories {
-        jcenter()
-        maven {
-            url "https://maven.google.com"
-        }
+    lintOptions {
+        abortOnError false
     }
-}
-
-
-ext {
-    supportLibraryVersion = '28.0.0'
+    compileOptions {
+        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        freeCompilerArgs += ["-Xopt-in=kotlin.RequiresOptIn"]
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+    buildFeatures {
+        dataBinding true
+        viewBinding true
+    }
+    buildToolsVersion '32.0.0'
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation"org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.6.20"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.6.20"
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
 
-    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    implementation "androidx.recyclerview:recyclerview:1.2.1"
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation"com.android.support:recyclerview-v7:$supportLibraryVersion"
     implementation"com.android.support:appcompat-v7:$supportLibraryVersion"
     implementation"com.android.support:support-v4:$supportLibraryVersion"
 }
 
-bintray {
-    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
-    key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_KEY')
-    // jFrog plugin must be declared for this line to work
-    configurations = ['archives']
-    // Package info for BinTray
-    pkg {
-        repo = 'maven'
-        name = 'SmartRecyclerView'
-        userOrg = 'lapptelier'
-        licenses = ['Apache-2.0']
-        vcsUrl = 'https://github.com/LApptelier/SmartRecyclerView.git'
-        websiteUrl = 'https://github.com/LApptelier/SmartRecyclerView.git'
-        version {
-            name = '2.6.0'
-            desc = '2.6.0'
-            released = new Date()
-            vcsTag = '2.6.0'
-        }
-    }
-}
+//bintray {
+//    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
+//    key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_KEY')
+//    // jFrog plugin must be declared for this line to work
+//    configurations = ['archives']
+//    // Package info for BinTray
+//    pkg {
+//        repo = 'maven'
+//        name = 'SmartRecyclerView'
+//        userOrg = 'lapptelier'
+//        licenses = ['Apache-2.0']
+//        vcsUrl = 'https://github.com/LApptelier/SmartRecyclerView.git'
+//        websiteUrl = 'https://github.com/LApptelier/SmartRecyclerView.git'
+//        version {
+//            name = '3.0.0'
+//            desc = '3.0.0'
+//            released = new Date()
+//            vcsTag = '3.0.0'
+//        }
+//    }
+//}
 
 // variable for the maven plugin
 archivesBaseName = "smartrecyclerview"
-
-install {
-    repositories.mavenInstaller {
-        pom.project {
-            group = 'com.lapptelier.smartrecyclerview'
-            version = '2.6.0'
-            group "com.codepath.libraries"
-            artifactId "smartrecyclerview"
-            version "2.6.0"
-        }
-    }
-}
+//
+//install {
+//    repositories.mavenInstaller {
+//        pom.project {
+//            group = 'com.lapptelier.smartrecyclerview'
+//            version = '3.0.0'
+//            group "com.codepath.libraries"
+//            artifactId "smartrecyclerview"
+//            version "3.0.0"
+//        }
+//    }
+//}

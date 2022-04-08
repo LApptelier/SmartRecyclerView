@@ -1,36 +1,29 @@
 package com.lapptelier.smartrecyclerview
 
+/**
+ * com.msd.msdetmoi.common.util.new_smart_recycler_view.SmartBindingRecyclerView
+ * <p/>
+ * Generic implementation of a {@see RecyclerView} intagrated in {@SwipeRefreshLayout} layout.
+ * Feature placeholder for empty list and loading progress bar both during reloading and loading more items.
+ * <p/>
+ *
+ * @author L'Apptelier SARL
+ * @date 02/09/2020
+ */
+
 import android.animation.LayoutTransition
 import android.annotation.SuppressLint
 import android.content.Context
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewStub
 import android.widget.LinearLayout
-import kotlinx.android.synthetic.main.layout_smart_recycler_view.view.*
-import java.util.*
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
-
-/**
- * com.lapptelier.smartrecyclerview.smart_recycler_view.SmartRecyclerView
- *
- *
- * Generic implementation of a {@see RecyclerView} intagrated in {@SwipeRefreshLayout} layout.
- *
- *
- * Feature placeholder for empty list and loading progress bar both during reloading and loading more items.
- *
- *
- * Sub class of [LinearLayout].
- *
- * @author L'Apptelier SARL
- * @date 14/09/2017
- */
 open class SmartRecyclerView : LinearLayout {
 
     // count of item to display before firing the loadmore action
@@ -52,14 +45,13 @@ open class SmartRecyclerView : LinearLayout {
      * @return the 'loading' view
      */
     var loadingView: View? = null
-        private set
+
     /**
      * Return the inflated view layout placed when the list is empty
      *
      * @return the 'empty' view
      */
     var emptyView: View? = null
-        private set
 
     // main layout of the view
     private var mOuterLayout: LinearLayout? = null
@@ -80,14 +72,8 @@ open class SmartRecyclerView : LinearLayout {
     private var emptyLoadingViewEnabled = true
 
     // Generic adapter
-    private var mAdapter: MultiGenericAdapter? = null
+    private var mAdapter: GenericAdapter? = null
 
-    // Layouts
-    var loadMoreLayout: Int = 0
-        set(layout) {
-            field = layout
-            mAdapter?.addViewHolderType(PlaceHolderCell::class.java, PlaceHolderViewHolder::class.java, layout)
-        }
 
     var loadingLayout: Int = 0
         set(layout) {
@@ -96,6 +82,7 @@ open class SmartRecyclerView : LinearLayout {
             loadingView = mLoadingViewStub!!.inflate()
             emptyLoadingViewEnabled = true
         }
+
     var emptyLayout: Int = 0
         set(layout) {
             field = layout
@@ -103,7 +90,6 @@ open class SmartRecyclerView : LinearLayout {
             emptyView = mEmptyViewStub!!.inflate()
 
         }
-
 
     /**
      * Enable or disable the animation on new list entry
@@ -138,7 +124,11 @@ open class SmartRecyclerView : LinearLayout {
      * @param attrs    attribute set to customize the RecyclerView
      * @param defStyle style of the RecyclerView
      */
-    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
+    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(
+        context,
+        attrs,
+        defStyle
+    ) {
         setup()
     }
 
@@ -152,13 +142,14 @@ open class SmartRecyclerView : LinearLayout {
         }
         mExternalOnScrollListeners = ArrayList()
 
+
         val inflater = LayoutInflater.from(context)
 
         val view = inflater.inflate(R.layout.layout_smart_recycler_view, this)
-        recyclerView = view.smart_list_recycler
-        mEmptyViewStub = view.smart_list_empty_stub
-        mLoadingViewStub = view.smart_list_loading_stub
-        swipeLayout = view.smart_list_swipe_layout
+        recyclerView = view.findViewById(R.id.smart_list_recycler)
+        mEmptyViewStub = view.findViewById(R.id.smart_list_empty_stub)
+        mLoadingViewStub = view.findViewById(R.id.smart_list_loading_stub)
+        swipeLayout = view.findViewById(R.id.smart_list_swipe_layout)
 
         if (recyclerView != null) {
             mInternalOnScrollListener = object : RecyclerView.OnScrollListener() {
@@ -169,11 +160,16 @@ open class SmartRecyclerView : LinearLayout {
                         val layoutManager = recyclerView.layoutManager as LinearLayoutManager
 
                         if (layoutManager.findLastVisibleItemPosition() >= layoutManager.itemCount - itemLeftMoreToLoad
-                                && !isLoading && mAdapter != null && mAdapter!!.hasMore) {
+                            && !isLoading && mAdapter != null && mAdapter!!.hasMore
+                        ) {
 
                             isLoading = true
                             if (mOnMoreListener != null) {
-                                mOnMoreListener!!.onMoreAsked(this@SmartRecyclerView.recyclerView!!.adapter!!.itemCount, itemLeftMoreToLoad, layoutManager.findLastVisibleItemPosition())
+                                mOnMoreListener!!.onMoreAsked(
+                                    this@SmartRecyclerView.recyclerView!!.adapter!!.itemCount,
+                                    itemLeftMoreToLoad,
+                                    layoutManager.findLastVisibleItemPosition()
+                                )
                             }
                         }
                     }
@@ -216,7 +212,7 @@ open class SmartRecyclerView : LinearLayout {
      *
      * @param adapter inner RecyclerView' adapter
      */
-    fun setAdapter(adapter: MultiGenericAdapter) {
+    fun setAdapter(adapter: GenericAdapter) {
         setAdapter(adapter, true)
     }
 
@@ -226,11 +222,8 @@ open class SmartRecyclerView : LinearLayout {
      * @param adapter inner RecyclerView' adapter
      * @param dismissLoadingViewAutomatically true to handle loading view automatically at every adapter changes
      */
-    fun setAdapter(adapter: MultiGenericAdapter, dismissLoadingViewAutomatically: Boolean) {
+    fun setAdapter(adapter: GenericAdapter, dismissLoadingViewAutomatically: Boolean) {
         mAdapter = adapter
-
-        //adding the placeholder viewholder support
-        if (loadMoreLayout > -1) mAdapter?.addViewHolderType(PlaceHolderCell::class.java, PlaceHolderViewHolder::class.java, loadMoreLayout)
 
         if (recyclerView != null) {
             recyclerView!!.adapter = mAdapter
@@ -259,12 +252,20 @@ open class SmartRecyclerView : LinearLayout {
                         dismissLoadingView()
                     }
 
-                    override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
+                    override fun onItemRangeMoved(
+                        fromPosition: Int,
+                        toPosition: Int,
+                        itemCount: Int
+                    ) {
                         super.onItemRangeMoved(fromPosition, toPosition, itemCount)
                         dismissLoadingView()
                     }
 
-                    override fun onItemRangeChanged(positionStart: Int, itemCount: Int, payload: Any?) {
+                    override fun onItemRangeChanged(
+                        positionStart: Int,
+                        itemCount: Int,
+                        payload: Any?
+                    ) {
                         super.onItemRangeChanged(positionStart, itemCount, payload)
                         dismissLoadingView()
                     }
@@ -325,8 +326,7 @@ open class SmartRecyclerView : LinearLayout {
      */
     @SuppressLint("ClickableViewAccessibility")
     override fun setOnTouchListener(listener: View.OnTouchListener) {
-        if (recyclerView != null)
-            recyclerView!!.setOnTouchListener(listener)
+        recyclerView?.setOnTouchListener(listener)
     }
 
     /**
@@ -335,8 +335,9 @@ open class SmartRecyclerView : LinearLayout {
      * @param display true to display the pull-to-refresh, false otherwise
      */
     fun enableSwipeToRefresh(display: Boolean) {
-        if (swipeLayout != null)
-            swipeLayout!!.isEnabled = display
+        swipeLayout?.let {
+            it.isEnabled = display
+        }
     }
 
 
@@ -361,8 +362,16 @@ open class SmartRecyclerView : LinearLayout {
             if (swipeLayout != null && !swipeLayout!!.isRefreshing) {
                 // on affiche le PTR
                 val typedValue = TypedValue()
-                context.theme.resolveAttribute(android.support.v7.appcompat.R.attr.actionBarSize, typedValue, true)
-                swipeLayout?.setProgressViewOffset(false, 0, resources.getDimensionPixelSize(typedValue.resourceId))
+                context.theme.resolveAttribute(
+                    androidx.appcompat.R.attr.actionBarSize,
+                    typedValue,
+                    true
+                )
+                swipeLayout?.setProgressViewOffset(
+                    false,
+                    0,
+                    resources.getDimensionPixelSize(typedValue.resourceId)
+                )
                 swipeLayout?.isRefreshing = true
             }
         } else {

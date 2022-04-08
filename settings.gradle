@@ -1,1 +1,12 @@
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        maven { url "https://maven.google.com" }
+        maven { url 'https://oss.sonatype.org/service/local/repositories/snapshots/content/' }
+        maven { url 'https://jitpack.io' }
+        mavenCentral()
+        google()
+    }
+}
+rootProject.name = "smartrecyclerview"
 include ':app', ':smartrecyclerview'
