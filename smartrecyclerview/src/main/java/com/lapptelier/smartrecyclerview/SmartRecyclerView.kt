@@ -462,9 +462,9 @@ open class SmartRecyclerView : LinearLayout {
      * @param position position to scroll to
      */
     fun scrollTo(position: Int) {
-        if (recyclerView != null)
-            this.recyclerView!!.scrollToPosition(position)
+        this.recyclerView?.scrollToPosition(position)
     }
+
 
     /**
      * Scroll smoothly to an item position in the RecyclerView

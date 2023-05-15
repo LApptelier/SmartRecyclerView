@@ -13,7 +13,8 @@ import com.lapptelier.smartrecyclerview.ViewHolderInteractionListener
  * @author L'Apptelier SARL
  * @date 02/09/2020
  */
-abstract class GenericAdapter(val listener: ViewHolderInteractionListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+abstract class GenericAdapter(val listener: ViewHolderInteractionListener) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var items: ArrayList<Any> = ArrayList() // Adapter's idem list
     var hasMore: Boolean = false // Flag indicating if there are more item to load
@@ -41,9 +42,7 @@ abstract class GenericAdapter(val listener: ViewHolderInteractionListener) : Rec
      * @param item item to append
      */
     fun add(item: Any) {
-        this.clear()
-        this.notifyDataSetChanged()
-        this.items.add(item)
+        this.items = arrayListOf(item)
         if (hasMore) {
             this.items.add(PlaceHolderCell())
             this.notifyItemRangeInserted(0, 2)
@@ -57,19 +56,17 @@ abstract class GenericAdapter(val listener: ViewHolderInteractionListener) : Rec
      * @param items items to append
      */
     fun addAll(items: List<Any>) {
-        this.clear()
         if (items.isEmpty()) {
-            this.notifyDataSetChanged()
-        } else {
             this.clear()
+        } else {
             val tempList: ArrayList<Any> = ArrayList()
             tempList.addAll(items)
             if (hasMore) {
                 tempList.add(PlaceHolderCell())
             }
             this.items = tempList
-            notifyDataSetChanged()
         }
+        this.notifyDataSetChanged()
     }
 
     /**
